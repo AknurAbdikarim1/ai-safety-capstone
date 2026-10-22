@@ -158,9 +158,36 @@ This file records actions, results, and learnings. Add entries as work continues
 - Downloads are included in elapsed time when needed; cached weights can make later runs faster.
 - Writing measurement code does not complete the measurement check. A new run must produce the values.
 
+## 2026-10-22 — Runtime and GPU memory results
+
+**Action**
+- Ran the updated script in Colab and inspected its saved outputs.
+- The researcher shared the output in chat.
+
+**Result**
+- Layers 9, 18, and 27: shape `(1, 2048)`, dtype `float32`, all values finite.
+- Response: `42`.
+- Model revision: `aa8e72537993ba99e69dfaafa59ed015b17504d1`.
+- Elapsed time: `81.70 seconds`.
+- Peak GPU allocated: `5.773 GiB`.
+- Peak GPU reserved: `5.869 GiB`.
+- Executed notebook: `docs/validation/2026-10-22_smoke_run2.ipynb`. Its saved outputs were inspected locally and match the results above.
+- Output path: `/content/drive/MyDrive/ai-safety-capstone/smoke_20261022T150546349901Z`.
+
+**Learning**
+- The updated script saved timing and memory measurements, and the notebook read them.
+- Elapsed time includes loading and any downloads. It is not generation time alone.
+- Allocated memory is memory used by PyTorch tensors; reserved memory includes space held by its allocator for reuse. These values do not measure all GPU usage.
+- These measurements apply to this short smoke prompt, not future agent rollouts.
+- The [model card](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct) lists about 3.09 billion parameters. At two bytes per float16 parameter, weights require about 5.76 GiB. The measured 5.773 GiB peak allocated is consistent with that estimate; weights appear to account for most memory in this run.
+- Peak reserved exceeded peak allocated by about 0.096 GiB. These are separate peaks, not a measurement of unused memory at one instant.
+- The [T4 specifications](https://www.nvidia.com/content/dam/en-zz/Solutions/data-center/tesla-t4/t4-tensor-core-datasheet-951643.pdf) list 16 GB of GPU memory. This run fits, but its PyTorch memory figures do not establish how much memory is available for longer tasks.
+- For later runs, compare peak memory alongside input token count, generated token count, batch size, and dtype.
+
 ## Pending checks and next steps
 
-- Run the updated script in a new folder to record elapsed runtime and peak GPU memory.
+- Preserve the measured run's metadata in Drive; its output path and executed notebook are now recorded here.
+- The script records the model's resolved revision but not a separately resolved tokenizer revision. Both are requested with the same revision argument; exact tokenizer provenance still needs verification for the full wording of step 0.5.
 - Preserve the notebook output and run metadata as evidence for Phase 0.
 - Review the remaining Phase 0 requirements before marking the phase complete in `RESEARCH_PLAN.md`.
 - After Phase 0, inspect source tasks and draft the pilot protocol and annotation rubric for review. No behavioral collection or probe training has started.
