@@ -18,9 +18,9 @@ Written reasoning is observable model-generated text, not privileged access to b
 
 - [x] Create local repository structure, requirements, smoke script, notebook, README.
 - [x] Check script syntax, notebook JSON, and initial ZIP integrity.
-- [ ] Install and validate dependencies on the execution platform.
-- [ ] Execute full Qwen inference and activation extraction on a GPU.
-- [ ] Link/push a GitHub repository when the account/repository destination is established.
+- [x] Install and validate dependencies on the execution platform.
+- [x] Execute full Qwen inference and activation extraction on a GPU.
+- [x] Link/push a GitHub repository when the account/repository destination is established.
 - [ ] All behavioral collection, annotation, replay validation, and probe work below.
 
 The existing arithmetic smoke script is infrastructure only. Its prompt and layer choices are not the research protocol.
@@ -29,12 +29,14 @@ The existing arithmetic smoke script is infrastructure only. Its prompt and laye
 
 Purpose: establish a working, persistent GPU pipeline before adding an agent harness.
 
-- [ ] 0.1 Open the existing setup notebook in Colab and select an available GPU.
-- [ ] 0.2 Install requirements; resolve compatibility errors and record the resulting environment.
-- [ ] 0.3 Run the smoke script, saving directly to persistent storage.
-- [ ] 0.4 Inspect the actual response, activation dimensions, finite values, and save/reload equality.
+- [x] 0.1 Open the existing setup notebook in Colab and select an available GPU.
+- [x] 0.2 Install requirements; resolve compatibility errors and record the resulting environment.
+- [x] 0.3 Run the smoke script, saving directly to persistent storage.
+- [x] 0.4 Inspect the actual response, activation dimensions, finite values, and save/reload equality.
 - [ ] 0.5 Record model/tokenizer revision, dtype, hardware, package versions, runtime, and peak GPU memory.
-- [ ] 0.6 Restart the runtime and reload the saved outputs to demonstrate persistence.
+- [x] 0.6 Restart the runtime and reload the saved outputs to demonstrate persistence.
+
+Evidence: the researcher shared Colab installation, GPU, script completion, output inspection, and post-restart reload results in chat on 22 October 2026. See [RESEARCH_LOG.md](RESEARCH_LOG.md) for versions, model revision, output path, and results. Step 0.5 remains open: runtime and peak GPU memory were not captured, and the executed notebook and saved metadata still need to be preserved for review. Dependency conflicts with unused preinstalled packages were reported; the smoke script ran successfully despite them.
 
 Deliverable: one inspected smoke-run folder plus a short validation record. Gate: proceed only when model inference and activation storage work. We will report failures rather than mark this phase complete based on syntax checks.
 

@@ -4,6 +4,7 @@ import importlib.metadata
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from time import perf_counter
 
 import numpy as np
 import torch
@@ -31,6 +32,10 @@ def main():
         parser.error("CUDA is unavailable. Select a GPU runtime or use --device cpu.")
     if args.output_dir.exists() and any(args.output_dir.iterdir()):
         parser.error("Output directory is nonempty; choose a new directory to preserve previous runs.")
+    if device == "cuda":
+        torch.cuda.synchronize()
+        torch.cuda.reset_peak_memory_stats()
+    started = perf_counter()
     set_seed(args.seed)
     dtype = torch.float16 if device == "cuda" else torch.float32
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=args.revision)
@@ -69,6 +74,15 @@ def main():
             pad_token_id=tokenizer.eos_token_id,
         )
     response = tokenizer.decode(generated[0, inputs.input_ids.shape[1]:], skip_special_tokens=True)
+    if device == "cuda":
+        torch.cuda.synchronize()
+    measurements = {
+        "elapsed_seconds": perf_counter() - started,
+        "scope": "seed setup, tokenizer/model loading (including downloads if needed), prompt processing, activation extraction, generation, and decoding; excludes imports and output saving",
+        "peak_gpu_allocated_bytes": torch.cuda.max_memory_allocated() if device == "cuda" else None,
+        "peak_gpu_reserved_bytes": torch.cuda.max_memory_reserved() if device == "cuda" else None,
+        "memory_scope": "PyTorch CUDA allocator in this script process; not total GPU usage",
+    }
     args.output_dir.mkdir(parents=True, exist_ok=True)
     saved = {}
     for layer, vector in sorted(vectors.items()):
@@ -86,6 +100,7 @@ def main():
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "seed": args.seed, "device": device, "model_dtype": str(dtype),
         "gpu": torch.cuda.get_device_name(0) if device == "cuda" else None,
+        "measurements": measurements,
         "versions": {name: importlib.metadata.version(name) for name in ["torch", "transformers", "accelerate", "numpy"]},
         "messages": messages, "rendered_prompt": rendered,
         "input_token_ids": inputs.input_ids[0].tolist(),
@@ -97,6 +112,10 @@ def main():
     }
     (args.output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     print(f"Response: {response}")
+    print(f"Elapsed: {measurements['elapsed_seconds']:.2f} seconds")
+    if device == "cuda":
+        print(f"Peak GPU allocated: {measurements['peak_gpu_allocated_bytes'] / 1024**3:.3f} GiB")
+        print(f"Peak GPU reserved: {measurements['peak_gpu_reserved_bytes'] / 1024**3:.3f} GiB")
     print(f"Saved run: {args.output_dir.resolve()}")
 
 

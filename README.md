@@ -36,6 +36,8 @@ Extraction uses a separate prompt-only forward pass, before response generation.
 
 Every selected layer is saved as `smoke_001_layer_XX.npy`, with task association in `metadata.json`. The script validates shape, finiteness and save/load equality. Metadata records the actual generated response, prompt, model revision, layers, generation options, precision, seed, hardware and installed package versions. Seeds do not guarantee bitwise agreement across hardware. Use `--revision COMMIT_SHA` with the recorded resolved revision for future runs. Requirements constrain the environment; record and compare actual installed versions before research runs.
 
+New smoke runs also record elapsed seconds and peak GPU allocated/reserved bytes in `metadata.json` under `measurements`. Timing covers seed setup, tokenizer/model loading (including downloads if needed), extraction, generation, and decoding; it excludes imports and output saving. CUDA is synchronized at the measurement boundaries. Memory peaks cover PyTorch's CUDA allocator in the script process, not total device usage. The notebook displays these fields when present and still loads older runs without them. Cached model files can reduce loading time, so elapsed times across runs may differ.
+
 ## Repository and GitHub
 
 This folder is initialized as a local Git repository. A GitHub repository has not been created or linked. After creating an empty repository named `ai-safety-capstone` in your own account, run:
