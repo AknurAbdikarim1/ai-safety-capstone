@@ -184,10 +184,29 @@ This file records actions, results, and learnings. Add entries as work continues
 - The [T4 specifications](https://www.nvidia.com/content/dam/en-zz/Solutions/data-center/tesla-t4/t4-tensor-core-datasheet-951643.pdf) list 16 GB of GPU memory. This run fits, but its PyTorch memory figures do not establish how much memory is available for longer tasks.
 - For later runs, compare peak memory alongside input token count, generated token count, batch size, and dtype.
 
+## 2026-10-22 — Tokenizer cache check
+
+**Action**
+- Used `huggingface_hub.try_to_load_from_cache` in Colab to look up `tokenizer.json` and `tokenizer_config.json` at the recorded model commit.
+- The researcher shared the returned paths in chat.
+
+**Result**
+- Both files were found under this snapshot:
+
+```text
+/root/.cache/huggingface/hub/models--Qwen--Qwen2.5-3B-Instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1/
+```
+
+**Learning**
+- Tokenizer files for the model commit are present in the cache.
+- This check does not prove which tokenizer files the earlier runs loaded. The script requested `main` for both model and tokenizer, and did not record a separately resolved tokenizer revision.
+- This is a provenance gap. It does not invalidate the observed inference, array checks, or persistence result.
+- No extra arithmetic run is needed to repeat those checks. Before research collection, pin both loads to a commit and record their revision provenance. That code change has not been made yet.
+
 ## Pending checks and next steps
 
 - Preserve the measured run's metadata in Drive; its output path and executed notebook are now recorded here.
-- The script records the model's resolved revision but not a separately resolved tokenizer revision. Both are requested with the same revision argument; exact tokenizer provenance still needs verification for the full wording of step 0.5.
+- Step 0.5 has tokenizer cache evidence, with the historical provenance limit recorded above. Do not claim the earlier tokenizer revision was proved. Pin and record revision provenance before research collection.
 - Preserve the notebook output and run metadata as evidence for Phase 0.
 - Review the remaining Phase 0 requirements before marking the phase complete in `RESEARCH_PLAN.md`.
 - After Phase 0, inspect source tasks and draft the pilot protocol and annotation rubric for review. No behavioral collection or probe training has started.
