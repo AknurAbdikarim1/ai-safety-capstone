@@ -1,0 +1,3 @@
+# Optional host-side upstream controller imports and offline integration tests.
+# Qwen model libraries remain in requirements.txt; no weights are installed here.
+-e ./experiment_sources/agent-interp-envs
