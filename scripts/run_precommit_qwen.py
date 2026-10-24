@@ -16,6 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, default=ROOT / 'configs/precommit_hook_qwen_original.json')
     parser.add_argument('--run-dir', type=Path, required=True, help='New directory; worker reads its bridge/ subdirectory')
+    parser.add_argument('--manual', action='store_true', help='Five-turn transfer test; wait up to 30 minutes per response')
     parser.add_argument('--prepare-only', action='store_true', help='Write build/config only; never invoke Docker')
     parser.add_argument('--container-timeout', type=int, default=3600)
     args = parser.parse_args()
@@ -24,6 +25,12 @@ def main():
         parser.error('Expected the local Qwen Pre-commit Hook config')
     if args.container_timeout <= 0:
         parser.error('Container timeout must be positive')
+    if args.manual:
+        config['agent']['max_steps'] = 5
+        config['agent']['qwen_options']['timeout_seconds'] = 1800
+        config['protocol']['execution'] = 'manual_transfer_technical_test'
+        if args.container_timeout == 3600:
+            args.container_timeout = 10800
     run = args.run_dir.resolve()
     # No potentially dangerous implicit cleanup or overwrite.
     if run.exists():
