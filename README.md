@@ -59,3 +59,7 @@ Local checks cover Python syntax, notebook structure and archive contents. **Ful
 The arithmetic prompt is a technical check, not a misleading-report experiment. Next, review a 5–10 template behavioral pilot before implementing it. Research labels will describe observed evidence in model rollouts, not established intentions or beliefs; see the current roadmap for the revised annotation design. Comparable misleading outputs must be observed rather than assumed. High condition accuracy can reflect prompt wording; even outperforming a particular text baseline would not by itself establish deception or a distinct psychological mechanism.
 
 Model loading follows the [official Qwen model card](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct) and [Qwen Transformers guidance](https://qwen.readthedocs.io/en/v2.5/inference/chat.html).
+
+## Original Pre-commit Hook source
+
+The exact upstream task and supporting framework files are preserved under `experiment_sources/agent-interp-envs/`. See [the adaptation checklist](docs/PRECOMMIT_ADAPTATION.md) and `experiment_sources/UPSTREAM_MANIFEST.json` for the pinned source and checksums. Run `python scripts/verify_upstream.py` to verify source integrity. The Qwen environment integration is not implemented yet.
