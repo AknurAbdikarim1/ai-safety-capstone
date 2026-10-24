@@ -1,0 +1,69 @@
+"""Qwen generation. Heavy libraries import only when constructing the worker."""
+import hashlib
+import importlib.metadata
+import platform
+import random
+import time
+
+
+class LocalQwen:
+    def __init__(self, model_id, settings):
+        import torch
+        from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+        self.torch = torch
+        self.model_id, self.settings = model_id, settings
+        device = settings['device']
+        if device == 'cuda' and not torch.cuda.is_available():
+            raise RuntimeError('CUDA unavailable; choose the actual GPU runtime')
+        dtype = {'float16': torch.float16, 'float32': torch.float32}[settings['dtype']]
+        config = AutoConfig.from_pretrained(model_id, revision=settings['revision'])
+        resolved = getattr(config, '_commit_hash', None) or settings['revision']
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id, revision=resolved)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_id, revision=resolved, config=config, torch_dtype=dtype,
+            device_map={'': device}, attn_implementation='sdpa').eval()
+        self.metadata = {
+            'model': model_id, 'requested_revision': settings['revision'],
+            'resolved_revision': getattr(self.model.config, '_commit_hash', None),
+            'template_sha256': hashlib.sha256(self.tokenizer.chat_template.encode()).hexdigest(),
+            'versions': {n: importlib.metadata.version(n) for n in ['torch', 'transformers', 'numpy', 'accelerate']},
+            'python': platform.python_version(), 'device': device, 'dtype': settings['dtype'],
+            'gpu': torch.cuda.get_device_name(0) if device == 'cuda' else None,
+            'attention_implementation': 'sdpa', 'hidden_size': self.model.config.hidden_size}
+
+    def generate(self, request, on_input=None):
+        torch = self.torch
+        seed = self.settings['seed']  # fixed per-call seed; recorded explicitly, not independent task replication
+        random.seed(seed)
+        import numpy as np
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+        inputs = self.tokenizer.apply_chat_template(
+            request['messages'], tools=request['tools'], add_generation_prompt=True,
+            tokenize=True, return_dict=True, return_tensors='pt').to(self.settings['device'])
+        ids = inputs['input_ids'][0].tolist()
+        if on_input is not None:
+            on_input({'input_token_ids': ids, 'model_metadata': self.metadata,
+                      'settings': self.settings, 'prefix_last_token_index': len(ids) - 1})
+        budget = min(self.settings['max_context_tokens'], self.model.config.max_position_embeddings)
+        if len(ids) + self.settings['max_new_tokens'] > budget:
+            raise ValueError('Context budget exceeded; no input was silently truncated')
+        kw = {'max_new_tokens': self.settings['max_new_tokens'],
+              'do_sample': self.settings['do_sample'], 'pad_token_id': self.tokenizer.eos_token_id}
+        if self.settings['do_sample']:
+            kw.update(temperature=self.settings['temperature'], top_p=self.settings['top_p'])
+        started = time.monotonic()
+        with torch.inference_mode():
+            output = self.model.generate(**inputs, **kw)
+        generated = output[0, len(ids):].tolist()
+        eos = self.model.generation_config.eos_token_id
+        eos = eos if isinstance(eos, list) else [eos]
+        stopped = bool(generated and generated[-1] in eos)
+        # Decode explicitly after removing only terminal EOS; retain tool markup and other tokens.
+        payload = generated[:-1] if stopped else generated
+        text = self.tokenizer.decode(payload, skip_special_tokens=False)
+        return {'text': text, 'input_token_ids': ids, 'generated_token_ids': generated,
+                'stop_reason': 'eos' if stopped else 'incomplete', 'seed_policy': 'reset_configured_seed_per_call',
+                'elapsed_seconds': time.monotonic() - started, 'model_metadata': self.metadata}
