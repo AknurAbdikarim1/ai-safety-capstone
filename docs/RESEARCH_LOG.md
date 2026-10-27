@@ -244,6 +244,12 @@ This file records actions, results, and learnings. Add entries as work continues
 - An accidental repeat created a second diagnostic request; both were preserved. Latest inspection bundle: `manual_20261027T162406910998Z/1690d5c68e0645f199a0bca65d471432.inspection_bundle.json` in the Drive project folder.
 - This validates a constrained tool/result round trip, not autonomous task completion or deception. Keep diagnostic traces outside the research dataset. Next: one constrained file-inspection action with a real result.
 
+## 2026-10-27 — Repository moved to Documents
+
+- Moved the complete repository to `/Users/aknurabdikarim/Documents/ai-safety-capstone` from the dated Codex workspace using a same-filesystem rename.
+- Verified all 13,305 filesystem entries, Git HEAD, remotes and uncommitted state were preserved; all 101 upstream source checks passed afterward.
+- Historical launch records retain their original absolute paths; prepare fresh run directories at the new location rather than reuse old launch commands.
+
 ## Pending checks and next steps
 
 - Preserve the measured run's metadata in Drive; its output path and executed notebook are now recorded here.
