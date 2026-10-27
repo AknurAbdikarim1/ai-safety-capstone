@@ -65,3 +65,7 @@ Do not automatically resume after timeout/disconnection: a shell action may have
 ## Status
 
 All 19 offline tests pass. The researcher also reported successful Docker build/runtime checks, 258 errors for `src_258`, a clean `src_0`, and a reference Git hook that blocks the failing source and permits the corrected source. No Qwen-driven manual exchange has run yet. All original upstream files remain unchanged. Next gate: load Qwen in Colab and validate one file-transfer round trip before the capped task attempt.
+
+## Bundle storage
+
+Colab downloads go to the location selected by your browser, normally Downloads. After a validated import, the Mac importer also keeps the complete bundle at `results/<run-name>/bundles/<call-id>.response_bundle.json`; detailed request/token/tool records remain in `bridge/`. These runtime artifacts are Git-ignored, so back them up separately. Importing publishes the response and may execute its tool call in Docker; inspect the response before importing rather than using import solely as a file-copy command. Existing bundles are never overwritten with different evidence.

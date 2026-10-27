@@ -88,6 +88,9 @@ def import_response(run_dir, bundle):
         if response.get('parsed') != parse_output(raw['text']):
             raise ValueError('Parsed output differs from raw generation')
     bridge = Path(run_dir) / 'bridge'
+    archive = Path(run_dir) / 'bundles' / f'{call_id}.response_bundle.json'
+    if archive.exists() and read(archive) != bundle:
+        raise ValueError('Conflicting archived bundle')
     # Per-call directory above prevents remote filenames/path traversal from entering paths.
     # Existing identical artifacts permit recovery after a partial import, never overwrite.
     artifacts = [('input', inputs), ('generation', raw), ('manual_bundle', bundle)]
@@ -99,5 +102,8 @@ def import_response(run_dir, bundle):
                     raise ValueError('Conflicting existing artifact: ' + suffix)
             else:
                 write_new(path, record)
+    # Archive the full transfer bundle before releasing the waiting controller.
+    if not archive.exists():
+        write_new(archive, bundle)
     write_new(bridge / f'{call_id}.response.json', response)
     return call_id

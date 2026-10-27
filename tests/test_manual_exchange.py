@@ -48,8 +48,19 @@ class ManualTests(unittest.TestCase):
         self.assertEqual(engine.calls, 1)
         raw = read(self.run / 'bridge' / (self.request['call_id'] + '.generation.json'))
         self.assertEqual(raw['generated_token_ids'], [3, 4])
+        archived = self.run / 'bundles' / (self.request['call_id'] + '.response_bundle.json')
+        self.assertEqual(read(archived), bundle)
         with self.assertRaises(ValueError):
             import_response(self.run, bundle)
+
+    def test_conflicting_archive_does_not_release_controller(self):
+        bundle = generate_bundle(self.request, Engine(), self.root / 'colab')
+        archive = self.run / 'bundles' / (self.request['call_id'] + '.response_bundle.json')
+        write_new(archive, {'other': 'evidence'})
+        with self.assertRaises(ValueError):
+            import_response(self.run, bundle)
+        self.assertEqual(read(archive), {'other': 'evidence'})
+        self.assertFalse(list((self.run / 'bridge').glob('*.response.json')))
 
     def test_repeat_upload_does_not_regenerate(self):
         engine = Engine()

@@ -24,7 +24,9 @@ def main():
     elif args.action == 'export':
         print('Exported:', export_request(args.run_dir, args.file))
     else:
-        print('Imported:', import_response(args.run_dir, read(args.file)))
+        call_id = import_response(args.run_dir, read(args.file))
+        print('Imported:', call_id)
+        print('Bundle saved:', (args.run_dir / 'bundles' / f'{call_id}.response_bundle.json').resolve())
 
 
 if __name__ == '__main__':
