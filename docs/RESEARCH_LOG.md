@@ -203,13 +203,54 @@ This file records actions, results, and learnings. Add entries as work continues
 - This is a provenance gap. It does not invalidate the observed inference, array checks, or persistence result.
 - No extra arithmetic run is needed to repeat those checks. Before research collection, pin both loads to a commit and record their revision provenance. That code change has not been made yet.
 
+## 2026-10-24 — Pre-commit Hook and Qwen integration
+
+**Action**
+- Copied and preserved 101 upstream files, including the original Pre-commit Hook task, under `experiment_sources/`. Source commit: `310c03f`.
+- Added the Qwen adapter, token/working-text logging, isolated-controller connection, build/launch scripts and notebook. Adaptations affect generated copies; original files remain unchanged.
+- Kept the shipped default prompts and 258-error variant. No reasoning-elicitation instruction was added.
+
+**Result**
+- Passed 14 offline tests, static/syntax checks, tokenizer-template formatting checks and all upstream integrity checks.
+- Commits: `2f54bfe` (sources), `5ea7b84` (adapter), `f5f970f` (setup/launcher), `26df2e4` (tests), `4d780e2` (notebook). No push performed in this chat; Markdown changes remain uncommitted.
+- No Qwen environment run or Docker execution yet. Earlier arithmetic smoke runs remain separate evidence. No behavioral dataset, annotations or probes collected.
+
+**Key limitations / next step**
+- Current transport requires a shared local POSIX filesystem; separate Colab connectivity is not implemented. Docker daemon access was unavailable during verification.
+- Logged working explanations are not automatically CoT. Missing reasoning is uncertain, not evidence of non-deception. The original scorer is not a deception label or complete task verifier.
+- Validate one isolated original-prompt attempt and inspect its reasoning/report boundaries. If traces are insufficient, review a neutral reasoning-elicitation adaptation before collection.
+
+## 2026-10-24 — Manual Colab–Mac validation and tool-format failures
+
+**Action**
+- Added manual request/response transfer, a Colab notebook and five-turn test mode. Commits: `a353bd3` (exchange/tests), `d1f18ab` (notebook/guide); no push performed here.
+- Researcher validated Docker on macOS (`linux aarch64`): image build, adapter imports, mypy 1.20.2, non-root commands and protected controller files. `src_258` produced 258 errors; `src_0` passed. A reference Git hook blocked the failing source and permitted the corrected source.
+- Loaded Qwen in Colab and attempted the original-prompt task; then ran a separate harmless formatting calibration and a new task attempt with only a neutral formatting reminder. No reasoning elicitation added.
+
+**Result**
+- Offline checks increased to 21 passing tests; original-source integrity remained intact.
+- Simple calibration passed both baseline and reminder conditions: one valid call followed by a report of an explicitly simulated result; no shell execution.
+- Both task attempts stopped at parsing: original call `7084cbaa328547749bfb62d7fbcd36b1`; reminder call `43a3a149441c4484a01f4286e2f5ec68`. Outputs ended at EOS but contained multiple/malformed calls. The reminder output also claimed actions/checks had succeeded without tool results. No model-requested task commands executed.
+- Execution/calibration outputs above were supplied by the researcher in chat. Raw generations/bundles are retained by the notebook workflow; Mac error-bundle import and controller shutdown have not been confirmed. Reminder config/calibration additions are not committed.
+
+**Learning / next step**
+- These are tool-protocol failures, not valid deception examples; no usable reasoning-based groups or probes yet. Do not repair outputs or silently retry.
+- Preserve failed bundles and confirm controller shutdown. Next proposed check: one repository-inspection action under task context before further prompt or model changes.
+
+## 2026-10-27 — Task-context inspection passed
+
+- Retained Pre-commit Hook context and formatting reminder; added a diagnostic instruction to call only `pwd` and wait. Qwen produced one valid call with no parser error.
+- Researcher executed `pwd` as `dev` in a disposable Docker container: exit code 0, output `/agent`. After receiving that actual result, Qwen replied: “The working directory is /agent.” Results were shared in chat.
+- An accidental repeat created a second diagnostic request; both were preserved. Latest inspection bundle: `manual_20261027T162406910998Z/1690d5c68e0645f199a0bca65d471432.inspection_bundle.json` in the Drive project folder.
+- This validates a constrained tool/result round trip, not autonomous task completion or deception. Keep diagnostic traces outside the research dataset. Next: one constrained file-inspection action with a real result.
+
 ## Pending checks and next steps
 
 - Preserve the measured run's metadata in Drive; its output path and executed notebook are now recorded here.
 - Step 0.5 has tokenizer cache evidence, with the historical provenance limit recorded above. Do not claim the earlier tokenizer revision was proved. Pin and record revision provenance before research collection.
 - Preserve the notebook output and run metadata as evidence for Phase 0.
 - Review the remaining Phase 0 requirements before marking the phase complete in `RESEARCH_PLAN.md`.
-- After Phase 0, inspect source tasks and draft the pilot protocol and annotation rubric for review. No behavioral collection or probe training has started.
+- Docker/reference-hook checks and manual Colab generation are now recorded above. Resolve task-specific tool formatting before a complete agent rollout, reasoning annotation or probe training.
 
 ## Entry format for future work
 
