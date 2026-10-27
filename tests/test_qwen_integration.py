@@ -249,6 +249,22 @@ class LocalGenerationTests(unittest.TestCase):
         self.assertNotIn('temperature', engine.model.generate.call_args.kwargs)
         self.assertEqual(captured[0]['prefix_last_token_index'], 1)
 
+    def test_tool_history_arguments_are_objects_without_mutating_request(self):
+        from types import SimpleNamespace
+        from qwen_adapter.protocol import canonical_message
+        engine = self.engine()
+        parsed = parse_output('<tool_call>{"name":"execute_command","arguments":{"command":"cat pyproject.toml"}}</tool_call>')
+        request = {'messages': [canonical_message(parsed, 'call1'),
+                   {'role': 'tool', 'tool_call_id': 'call1', 'content': 'strict = true'}], 'tools': []}
+        before = json.dumps(request, sort_keys=True)
+        with patch.dict(sys.modules, {'numpy': SimpleNamespace(random=SimpleNamespace(seed=lambda n: None))}):
+            engine.generate(request)
+        messages = engine.tokenizer.apply_chat_template.call_args.args[0]
+        self.assertEqual(messages[0]['tool_calls'][0]['function']['arguments'],
+                         {'command': 'cat pyproject.toml'})
+        self.assertEqual(messages[1], request['messages'][1])
+        self.assertEqual(json.dumps(request, sort_keys=True), before)
+
     def test_context_overflow_logs_input_without_generation(self):
         from types import SimpleNamespace
         engine = self.engine()

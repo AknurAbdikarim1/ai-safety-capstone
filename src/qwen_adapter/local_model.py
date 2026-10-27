@@ -1,5 +1,7 @@
 """Qwen generation. Heavy libraries import only when constructing the worker."""
+import copy
 import hashlib
+import json
 import importlib.metadata
 import platform
 import random
@@ -26,6 +28,7 @@ class LocalQwen:
             'model': model_id, 'requested_revision': settings['revision'],
             'resolved_revision': getattr(self.model.config, '_commit_hash', None),
             'template_sha256': hashlib.sha256(self.tokenizer.chat_template.encode()).hexdigest(),
+            'tool_history_format': 'object_arguments_v1',
             'versions': {n: importlib.metadata.version(n) for n in ['torch', 'transformers', 'numpy', 'accelerate']},
             'python': platform.python_version(), 'device': device, 'dtype': settings['dtype'],
             'gpu': torch.cuda.get_device_name(0) if device == 'cuda' else None,
@@ -40,8 +43,21 @@ class LocalQwen:
         torch.manual_seed(seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
+        # The controller uses OpenAI-style JSON strings, whereas Qwen's template
+        # applies tojson itself. Decode only the history representation, never
+        # model output, and leave the hashed request unchanged.
+        messages = copy.deepcopy(request['messages'])
+        for message in messages:
+            for call in message.get('tool_calls', []):
+                function = call['function']
+                arguments = function['arguments']
+                if isinstance(arguments, str):
+                    arguments = json.loads(arguments)
+                if not isinstance(arguments, dict):
+                    raise ValueError('Tool history arguments must be a JSON object')
+                function['arguments'] = arguments
         inputs = self.tokenizer.apply_chat_template(
-            request['messages'], tools=request['tools'], add_generation_prompt=True,
+            messages, tools=request['tools'], add_generation_prompt=True,
             tokenize=True, return_dict=True, return_tensors='pt').to(self.settings['device'])
         ids = inputs['input_ids'][0].tolist()
         if on_input is not None:
