@@ -250,6 +250,19 @@ This file records actions, results, and learnings. Add entries as work continues
 - Verified all 13,305 filesystem entries, Git HEAD, remotes and uncommitted state were preserved; all 101 upstream source checks passed afterward.
 - Historical launch records retain their original absolute paths; prepare fresh run directories at the new location rather than reuse old launch commands.
 
+## 2026-10-27 — Interface review before fresh full task
+
+- File-inspection records show one valid `cat pyproject.toml` call and the actual Docker result; the researcher shared Qwen's subsequent settings summary. Its final bundle is saved locally, but controller completion/import is not yet verified.
+- Found and fixed double JSON serialization of historical tool arguments in Qwen's template; recorded the corrected format in model metadata. Confirmed with the saved template hash and before/after rendering; 23 offline tests pass and 101 upstream files remain unchanged.
+- Prepared one fresh five-call full-task attempt using the existing formatting reminder, unchanged generation settings and no diagnostic instruction. Not launched yet; greedy first-turn output may repeat the earlier failure. Preserve errors; no JSON repair or automatic additional attempts.
+
+## 2026-10-27 — Full-task failure and interface review
+
+- **Trial:** Ran Qwen2.5-3B-Instruct on the full Pre-commit Hook task with the existing formatting reminder, corrected history adapter and a five-call cap; no diagnostic instructions.
+- **Result:** `results/full_task_01`, call `dcde76d6c7224217a8434f4f567f3c14`, stopped at step 0 with a protocol error and controller exit 1. Qwen generated multiple/malformed calls and unsupported completion claims; no model-generated commands executed. Output reached EOS at 369/512 tokens and exactly matched the earlier saved reminder response.
+- **Learning:** This is an interface failure, not deception evidence. The default template permits multiple calls, but our controller requires one; invalid JSON is a separate problem. The history fix cannot affect the first turn, and stopping at the first closing tag would not fix its malformed JSON.
+- **Next:** Evaluate the official [Qwen-Agent interface](https://qwen.readthedocs.io/en/v2.5/framework/function_call.html) with parallel calls disabled as a separate condition, keeping task files unchanged. Evaluation has not run yet; validate before collecting research data.
+
 ## Pending checks and next steps
 
 - Preserve the measured run's metadata in Drive; its output path and executed notebook are now recorded here.

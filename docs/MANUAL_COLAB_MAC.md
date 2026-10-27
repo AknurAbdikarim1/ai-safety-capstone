@@ -64,8 +64,39 @@ Do not automatically resume after timeout/disconnection: a shell action may have
 
 ## Status
 
-All 19 offline tests pass. The researcher also reported successful Docker build/runtime checks, 258 errors for `src_258`, a clean `src_0`, and a reference Git hook that blocks the failing source and permits the corrected source. No Qwen-driven manual exchange has run yet. All original upstream files remain unchanged. Next gate: load Qwen in Colab and validate one file-transfer round trip before the capped task attempt.
+As of 27 October 2026, all 23 offline tests pass and all 101 upstream files match their source checksums. The researcher verified Docker/reference-hook checks and constrained Qwen inspection exchanges. These establish interface functionality under diagnostic instructions; autonomous full-task reliability remains unverified.
 
 ## Bundle storage
 
 Colab downloads go to the location selected by your browser, normally Downloads. After a validated import, the Mac importer also keeps the complete bundle at `results/<run-name>/bundles/<call-id>.response_bundle.json`; detailed request/token/tool records remain in `bridge/`. These runtime artifacts are Git-ignored, so back them up separately. Importing publishes the response and may execute its tool call in Docker; inspect the response before importing rather than using import solely as a file-copy command. Existing bundles are never overwritten with different evidence.
+
+## Fresh full-task attempt after interface review — 27 October 2026
+
+Historical procedure: this attempt has now ended at step 0 with a tool-protocol error; no model-generated commands executed. Preserve `results/full_task_01` and do not rerun these commands with that directory. The next evaluation is Qwen-Agent with parallel calls disabled; see `RESEARCH_LOG.md`.
+
+The review found a history-format bug: the controller stores function arguments as JSON strings, but the saved Qwen template applies JSON serialization itself. The inference adapter now converts historical arguments to objects on a copy before rendering; the request hash, raw output and strict parser are unchanged. New model metadata records `tool_history_format: object_arguments_v1`. This affects turns after a tool call and cannot explain malformed first-turn responses. The cached template hash matches the saved file-inspection input record; its rendering was checked before and after correction.
+
+Use a fresh copy of `notebooks/03_manual_colab_mac.ipynb` in a restarted Colab runtime, with the updated `work/colab_full_task_01.zip` prepared on the Mac; keep executed diagnostic notebooks as evidence. Run the setup, Drive and model-loading cells. Confirm `engine.metadata.get('tool_history_format') == 'object_arguments_v1'` before starting Docker. No diagnostic cells or extra task instructions are used. The notebook's baseline generation settings match the reminder condition exactly.
+
+Terminal A, from the repository root:
+
+```sh
+python3 scripts/run_precommit_qwen.py \
+  --config configs/precommit_hook_qwen_format_reminder.json \
+  --manual \
+  --run-dir results/full_task_01
+```
+
+This presents the complete original task plus the existing neutral formatting reminder, with five model calls, 30 minutes per response and three hours for the container. It does not guarantee enough turns to complete the task; reaching the cap means incomplete. Do not use the diagnostic configuration or reuse an existing run directory.
+
+Terminal B, after a request appears:
+
+```sh
+python3 scripts/manual_exchange.py export \
+  --run-dir results/full_task_01 \
+  --file work/full_task_request_01.json
+```
+
+Upload that request in the notebook's repeat-turn cell, generate once, download the bundle, inspect it, and import the exact downloaded path with `scripts/manual_exchange.py import --run-dir results/full_task_01 --file /absolute/path/to/CALL.response_bundle.json`. Import an error bundle too to record the failure and release the waiting controller; do not repair its output. For each subsequent pending call, use a new export filename and repeat. Do not send another request after the controller stops.
+
+Stop this attempt on protocol error, truncation, timeout, report or the five-call cap. Preserve every bundle and inspect the controller records and outcome checks. Successful tool formatting alone is not task success; a final claim needs comparison with actual repository/check evidence. Since generation is greedy and the first prompt is unchanged, repeating the earlier first-turn failure is plausible; this is a confirmation attempt, not an independent behavioral sample. Do not start further attempts or add prompt instructions automatically.
