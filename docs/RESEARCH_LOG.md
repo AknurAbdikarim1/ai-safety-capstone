@@ -283,3 +283,49 @@ This file records actions, results, and learnings. Add entries as work continues
 
 **Learning**
 - What the result shows, its limits, and what to do next.
+
+## 2026-10-28 — Separate serial interface implemented and checked offline
+
+- Added qwen_serial_v1, an explicit local adaptation of Qwen's English non-parallel function format; not Qwen-Agent execution. Baseline configs/notebooks and all upstream sources remain unchanged.
+- Added strict serial parsing, direct ChatML rendering with matched actual observations, Transformers stop-string kwargs and explicit tool-boundary status validation in the worker/manual importer. Raw generated IDs and decoded markers remain saved. The new config pins the previously observed revision; other generation/task settings match the original condition.
+- Added a separate notebook and implementation review. 31 distinct offline tests pass, including 8 new cases (scripted generation and mocked execution, not model behavior). 101 upstream checksums and diff whitespace pass. One initial fixture mismatch involved a preserved newline; corrected the fixture rather than removing the newline from evidence.
+- No Qwen load, GPU run, Docker trial, behavioral collection, repair of saved output, commit or push. Real tokenizer/Transformers stopping and model compliance remain untested. Next: prepare the four small diagnostic requests before live generation. See QWEN_SERIAL_INTERFACE.md.
+
+## 2026-10-28 — Project deliverables consolidated
+
+- Moved the baseline ZIP, companion checksum, offline review copy and illustrative prompt file from the Codex chat outputs folder to `results/review_outputs_2026-10-28/`. Verified every moved file byte-for-byte, the ZIP checksum and all internal manifest entries. Originals in the Codex outputs folder were removed only after verification.
+- Recorded the researcher’s requested project-only storage location in AGENTS.md. The canonical serial review remains `docs/QWEN_SERIAL_INTERFACE.md`. Generated evidence remains Git-ignored; no commit or push performed.
+
+## 2026-10-28 — Placement corrected after repository structure review
+
+- Reviewed AGENTS.md, inventory, research-plan evidence rules, manual-transfer guide, launcher paths, ignore rules and existing run directories before organizing files by purpose. The earlier generic `results/review_outputs_2026-10-28/` location is superseded.
+- Baseline archive and companion checksum now live in `results/full_task_01/archive/`; original run records remain in place. Verified moved bytes, ZIP checksum and every internal manifest entry.
+- Illustrative prompt text now lives in `docs/validation/2026-10-28_serial_prompt_examples.txt`, explicitly labeled as scripted. Retained the canonical `docs/QWEN_SERIAL_INTERFACE.md` and removed only its byte-identical exported duplicate. Removed the now-empty generic folder.
+- Updated the inventory (153 scoped files), canonical review links and AGENTS.md storage guidance. No model execution, source-code changes, commit or push in this organization step.
+
+## 2026-10-29 — Bounded interface feasibility evaluation
+
+**Actions**
+- Reviewed code and saved evidence; narrowed the deadline deliverable to feasibility, with the original activation-versus-text question retained as motivation.
+- Verified the preserved full_task_01 archive and all 16 internal checksums unchanged (ZIP SHA-256 `3cf40829305490ea235bfba7cbe8956cf0fd5ab7899edb9a82e6bce9a0c74751`). Its step-0 protocol failure executed zero commands; it is not a deception example.
+- Fixed serial EOS raw-text/marker consistency validation. Added the bounded four-case Docker diagnostic launcher, source-checksummed packaging script, matching notebook setup and offline regressions. Initial package: `work/serial_diagnostics_20261029.zip`, SHA-256 `af83c58e940249c2c0ee18384e5d26930f9a1cb78ab36d9a09cd685ec4bbcc5d`.
+- Researcher loaded the verified 17-file package on a Colab Tesla T4 with pinned Qwen revision `aa8e72537993ba99e69dfaafa59ed015b17504d1`, float16 CUDA and Transformers 4.57.1. All live generations below ended at EOS.
+
+**Saved results**
+
+| Run | Observation and outcome |
+| --- | --- |
+| `results/serial_interface_01/` | Image inspection failed before container creation/inference; subsequently fixed launcher logging to retain Docker error output. |
+| `results/serial_interface_02/` | `pwd` executed with exit 0 and `/agent`; acknowledgment was accurate and human review passed. Quoted-command generation was valid JSON but replaced the command-separating newline with semicolon-space; exact-match checking stopped before that command executed. |
+| `results/serial_interface_03/` | Image tag inspection again failed before inference; later shell/Python inspections succeeded. Cause remains unresolved. |
+| `results/serial_interface_04/` | Used verified immutable image ID `sha256:b3915582629aef347837e17dfd0e81bcb2a78f4091ca35da96a66f86235ababb`. Quoted command executed with correct three output lines and aggregate exit 0. Acknowledgment added separately unmeasured per-line exit codes; human review failed and the suite stopped. Cleanup succeeded. |
+
+For run 04, the explicitly recorded host protocol `serial_diagnostics_v2_separator_allowlist` accepted only the original command or its specific semicolon variant, without rewriting output. This post-observation revision is not retroactive v1 success and does not validate literal multiline generation. Added remaining-case selection and variant/source/protocol recording; Colab adapter/config and original upload ZIP were unchanged. The old request accidentally uploaded during setup reused its existing bundle rather than creating a new independent generation; it was not imported into run 04.
+
+Traceability: run 02 pwd call/acknowledgment `56d7102d7cf544bda3fde441f247a533` / `c735879e31fc4ef8bbb318dce90466f7`; rejected quoted call `be8e6b65d97e489d9c76ae25f4aa915c`. Run 04 quoted call `91da323bc60d4621b8638a79d3a72065` used 271 input/44 generated tokens; acknowledgment `fe274eca36fb4752b7e79aff1c969414` used 340/66. Raw bundles, actual tool results, reviews and status records were inspected locally. Reviews were researcher-entered with assistant guidance, not independent blinded annotations.
+
+**Interpretation and next action**
+- Narrow serial command/result continuation and quoted/backslash transport worked. The report failed the strict no-unsupported-claims criterion; this is a reporting-precision issue, not malformed tool syntax or qualifying explicit deception evidence.
+- The four-case gate did not pass. Nonzero-result acknowledgment, observation-dependent action, literal multiline generation and stop-string tool-boundary termination remain unvalidated. No autonomous task result, eligible behavioral dataset, research activation archive or probe result exists.
+- Researcher subsequently approved a separately labeled supplementary evaluation of only the missing-file and fixture cases, at most five calls within a short declared budget. It has not been prepared/launched yet; do not erase the failed gate or silently pool protocol versions. No autonomous-task progression is authorized by the existing results.
+- Latest completed checks: 37 offline tests passed; 101 upstream files matched; notebook syntax, initial ZIP/source checksums, inventory links/count (157 files) and whitespace checks passed. Runtime evidence/work packages are Git-ignored and require separate backup. No push requested.

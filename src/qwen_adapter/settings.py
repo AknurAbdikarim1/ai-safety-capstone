@@ -19,6 +19,8 @@ def validate(config):
     if options['timeout_seconds'] <= 0:
         raise ValueError('Worker timeout must be positive')
     settings = options['generation']
+    if settings.get('tool_interface', 'xml_single_v1') not in ('xml_single_v1', 'qwen_serial_v1'):
+        raise ValueError('Unknown tool interface')
     if settings['device'] not in ['cuda', 'cpu'] or settings['dtype'] not in ['float16', 'float32']:
         raise ValueError('Unsupported device/dtype')
     if settings['device'] == 'cpu' and settings['dtype'] != 'float32':

@@ -30,7 +30,7 @@ class FakeEngine:
         self.calls += 1
         if on_input:
             on_input({'input_token_ids': [1, 2]})
-        return {'text': self.text, 'stop_reason': self.stop,
+        return {'text': self.text, 'raw_decoded_text': self.text, 'stop_reason': self.stop,
                 'input_token_ids': [1, 2], 'generated_token_ids': [3, 4]}
 
 
@@ -195,6 +195,48 @@ class UpstreamIntegrationTests(unittest.TestCase):
             finally:
                 stop.set()
                 worker.join(2)
+
+    def test_serial_controller_waits_for_actual_result_before_report(self):
+        import run_step
+        from states import CodingAgentState
+        class SerialEngine(FakeEngine):
+            settings = {'tool_interface': 'qwen_serial_v1'}
+            def generate(self, request, on_input=None):
+                first = self.calls == 0
+                if not first:
+                    assert request['messages'][-1]['role'] == 'tool'
+                    assert 'actual missing-file error' in request['messages'][-1]['content']
+                self.text = ('✿FUNCTION✿: execute_command\n✿ARGS✿: {"command":"cat missing"}'
+                             if first else 'The file could not be read.')
+                raw = super().generate(request, on_input)
+                if first:
+                    raw.update(stop_reason='tool_boundary', stop_marker='✿RESULT✿',
+                               raw_decoded_text=self.text + '✿RESULT✿')
+                return raw
+        with tempfile.TemporaryDirectory() as directory:
+            provider = self.provider(directory)
+            provider.settings = SerialEngine.settings
+            state = CodingAgentState()
+            with patch.object(run_step, 'run_command', return_value=(1, 'actual missing-file error')) as execute, contextlib.redirect_stdout(io.StringIO()):
+                provider.invoke_original = provider.invoke
+                engine = SerialEngine('')
+                with patch.object(provider, 'invoke', side_effect=lambda: self.roundtrip_invoke(provider, engine)):
+                    self.assertFalse(run_step.run_step(provider, state, {}))
+                    self.assertTrue(run_step.run_step(provider, state, {}))
+            execute.assert_called_once_with('cat missing')
+            self.assertEqual(provider.messages[-1]['content'], 'The file could not be read.')
+
+    def roundtrip_invoke(self, provider, engine):
+        # Same worker/provider path, with the original invoke saved outside its mock.
+        from qwen_adapter.worker import serve
+        stop = threading.Event()
+        worker = threading.Thread(target=serve, args=(provider.directory, engine, stop), daemon=True)
+        worker.start()
+        try:
+            return provider.invoke_original()
+        finally:
+            stop.set()
+            worker.join(2)
 
     def test_config_forwarding_and_generated_source_syntax(self):
         from agent_interp_envs.checkpoint import provider_kwargs

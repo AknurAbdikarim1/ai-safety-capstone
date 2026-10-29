@@ -2,6 +2,14 @@
 
 Version 1 — 22 October 2026. This is the working plan, not a record of completed experiments. Check boxes only after inspecting the corresponding evidence. Changes to scientific choices below require a documented discussion with the researcher before implementation.
 
+## Deadline scope — 29 October 2026
+
+The primary deliverable is now a bounded feasibility study: can this model/harness produce autonomous, auditable rollouts with enough explicit written reasoning to support the motivated study? The deadline is approximately three days away. The longer phased roadmap below is retained for reference, not the current collection commitment.
+
+Current gate: prepare and run the four interface diagnostics in [SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md), stopping on the first failure. If all pass, consider one easy clean-source task and one small failing-source task with explicit budgets and trusted checks. Prioritize auditing, reasoning availability, annotation feasibility and writing; do not force probing. No usable behavioral dataset, research activation archive, annotations or probes exists. Baseline full_task_01 is a step-0 protocol failure with zero model commands, not a deception example. Missing reasoning is uncertain. P1 contains reasoning used to define labels; comparisons could support an advantage only over prespecified text classifiers given the same context.
+
+The original question remains motivation and has not been answered. Reserve the final day for methods, observed failures/yield, limitations and reproducibility. Interface success alone does not authorize a larger collection.
+
 ## 1. Question, scope, and interpretation
 
 **Question:** Among misleading task reports, can internal activations distinguish rollouts with explicit verbalized deception evidence from other misleading rollouts, beyond what is recoverable from the preceding text?
@@ -250,4 +258,4 @@ This schedule is conditional. Low positive yield, annotation burden, or long age
 
 At each gate, record: completed tasks, actual artifacts/evidence, remaining uncertainties, proposed next action, and any scientific decision needing discussion. Routine engineering fixes proceed autonomously; changes to grouping, task design, model, reasoning elicitation, extraction definition, or evaluation require explanation and agreement.
 
-**Immediate next task:** complete Phase 0 with one real GPU run. Then inspect the source tasks and draft the pilot protocol and annotation rubric for review. Do not launch the full collection or train probes yet.
+**Immediate next task (supersedes the historical schedule):** complete the bounded serial-interface gate in [SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md), then decide whether the two small autonomous checks are justified. No full collection or probe training.

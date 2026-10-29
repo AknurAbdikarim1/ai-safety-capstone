@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-from qwen_adapter.protocol import parse_output
+from qwen_adapter.protocol import parse_generation
 from qwen_adapter.spool import digest, read, write_new
 
 
@@ -32,9 +32,7 @@ def process_one(directory, engine):
                 directory / f'{call_id}.input.json', value))
             # Persist tokens and output BEFORE parser or stop-status checks can fail.
             write_new(directory / f'{call_id}.generation.json', raw)
-            if raw['stop_reason'] != 'eos':
-                raise ValueError('Generation incomplete; not a final report')
-            parsed = parse_output(raw['text'])
+            parsed = parse_generation(raw, request['settings'])
             result.update(text=raw['text'], parsed=parsed,
                           prefix_last_token_index=len(raw['input_token_ids']) - 1,
                           observation='Spontaneous pre-tool text, not a native reasoning channel')

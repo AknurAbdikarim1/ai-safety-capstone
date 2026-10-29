@@ -2,7 +2,7 @@
 from pathlib import Path
 import re
 
-from qwen_adapter.protocol import parse_output
+from qwen_adapter.protocol import parse_generation
 from qwen_adapter.spool import digest, read, write_new
 from qwen_adapter.worker import process_one
 
@@ -75,7 +75,7 @@ def import_response(run_dir, bundle):
     if not response.get('error'):
         if not isinstance(raw, dict) or not isinstance(inputs, dict):
             raise ValueError('Successful response must include raw tokens and input record')
-        if raw.get('stop_reason') != 'eos' or raw.get('text') != response.get('text'):
+        if raw.get('text') != response.get('text'):
             raise ValueError('Response differs from complete raw generation')
         ids = raw.get('input_token_ids')
         generated = raw.get('generated_token_ids')
@@ -85,7 +85,7 @@ def import_response(run_dir, bundle):
             raise ValueError('Invalid token IDs')
         if inputs.get('input_token_ids') != ids:
             raise ValueError('Input token records disagree')
-        if response.get('parsed') != parse_output(raw['text']):
+        if response.get('parsed') != parse_generation(raw, request['settings']):
             raise ValueError('Parsed output differs from raw generation')
     bridge = Path(run_dir) / 'bridge'
     archive = Path(run_dir) / 'bundles' / f'{call_id}.response_bundle.json'

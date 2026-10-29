@@ -44,7 +44,7 @@ class QwenRemoteProvider(BaseProvider):
         if response.get('error'):
             raise RuntimeError('Inference/protocol failure: ' + response['error'])
         # Parse independently at both trust boundaries. Never execute worker-supplied code.
-        parsed = parse_output(response['text'])
+        parsed = parse_output(response['text'], self.settings.get('tool_interface', 'xml_single_v1'))
         if parsed != response['parsed']:
             raise RuntimeError('Worker/controller parser mismatch')
         self.messages.append(canonical_message(parsed, call_id))

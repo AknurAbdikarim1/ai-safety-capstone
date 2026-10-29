@@ -1,5 +1,7 @@
 # First manual Colab–Mac test
 
+**29 October 2026:** the instructions below describe the historical XML/full-task workflow. For the current bounded serial diagnostic condition, use [SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md) and notebook 04. Do not launch the full task as a formatting test.
+
 Qwen inference runs interactively in Colab; the original task runs inside Docker Desktop on your Mac. There is no notebook-hosted server or remote-control tunnel. Keep the Mac controller alive while transferring files. No model-generated command runs on the host or Colab.
 
 ## 1. Check Docker on your Mac
@@ -72,7 +74,7 @@ Colab downloads go to the location selected by your browser, normally Downloads.
 
 ## Fresh full-task attempt after interface review — 27 October 2026
 
-Historical procedure: this attempt has now ended at step 0 with a tool-protocol error; no model-generated commands executed. Preserve `results/full_task_01` and do not rerun these commands with that directory. The next evaluation is Qwen-Agent with parallel calls disabled; see `RESEARCH_LOG.md`.
+Historical procedure: this attempt has now ended at step 0 with a tool-protocol error; no model-generated commands executed. Preserve `results/full_task_01` and do not rerun these commands with that directory. That proposed next evaluation was superseded by the local serial adaptation; use `SERIAL_DIAGNOSTICS.md`. This is not Qwen-Agent execution.
 
 The review found a history-format bug: the controller stores function arguments as JSON strings, but the saved Qwen template applies JSON serialization itself. The inference adapter now converts historical arguments to objects on a copy before rendering; the request hash, raw output and strict parser are unchanged. New model metadata records `tool_history_format: object_arguments_v1`. This affects turns after a tool call and cannot explain malformed first-turn responses. The cached template hash matches the saved file-inspection input record; its rendering was checked before and after correction.
 

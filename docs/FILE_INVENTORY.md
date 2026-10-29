@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 27 October 2026; covers **147 files**, including uncommitted project files and this inventory.
+Updated 29 October 2026; covers **157 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -23,9 +23,9 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [src/qwen_adapter/__init__.py](../src/qwen_adapter/__init__.py) — [Active package marker] Makes the Qwen integration importable as a Python package; keep it with the adapter.
 - [src/qwen_adapter/audit.py](../src/qwen_adapter/audit.py) — [Supplementary checks] Records mypy, Git, marker, hook-bit and config diagnostics after a task; retain it as mechanical evidence rather than a complete verifier or deception classifier.
 - [src/qwen_adapter/container_entry.py](../src/qwen_adapter/container_entry.py) — [Active container wrapper] Starts the original task entrypoint and exports output ownership to the host user; needed by the adapted Docker image.
-- [src/qwen_adapter/local_model.py](../src/qwen_adapter/local_model.py) — [Active inference code] Loads aligned Qwen model/tokenizer revisions, renders tool-history arguments as objects, enforces context limits and generates token records; needed wherever Qwen runs.
+- [src/qwen_adapter/local_model.py](../src/qwen_adapter/local_model.py) — [Active inference code] Loads aligned Qwen model/tokenizer revisions, renders the selected XML or serial condition, enforces context limits and generates token records; needed wherever Qwen runs.
 - [src/qwen_adapter/manual_exchange.py](../src/qwen_adapter/manual_exchange.py) — [Active manual-transfer code] Exports requests, generates Colab bundles and validates/archives returned bundles under the run directory before releasing the controller; needed for the current Colab–Mac workflow.
-- [src/qwen_adapter/protocol.py](../src/qwen_adapter/protocol.py) — [Active parsing code] Validates single tool-call blocks and separates working text from reports without repairing commands; needed before interpreting or executing output.
+- [src/qwen_adapter/protocol.py](../src/qwen_adapter/protocol.py) — [Active parsing code] Validates XML or serial single calls and generation termination, separating working text from reports without repairing commands; needed before interpreting or executing output.
 - [src/qwen_adapter/remote_provider.py](../src/qwen_adapter/remote_provider.py) — [Active controller adapter] Implements the upstream provider interface using generation requests and tool-result history; needed inside the task controller.
 - [src/qwen_adapter/settings.py](../src/qwen_adapter/settings.py) — [Active validation code] Rejects unsupported model, protocol and generation settings before launch; needed when checking an experiment configuration.
 - [src/qwen_adapter/spool.py](../src/qwen_adapter/spool.py) — [Active transport utility] Publishes write-once JSON records and waits for matched responses on local POSIX storage; needed by the shared-folder and manual workflows.
@@ -204,3 +204,18 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [experiment_sources/agent-interp-envs/src/agent_interp_envs/runs.py](../experiment_sources/agent-interp-envs/src/agent_interp_envs/runs.py) — [Upstream analysis support] Reads rollout directories and classifies completion/error metadata; retained for original runner and grading utilities.
 - [experiment_sources/agent-interp-envs/src/agent_interp_envs/tool_calling.py](../experiment_sources/agent-interp-envs/src/agent_interp_envs/tool_calling.py) — [Active execution support] Runs shell commands with privilege dropping, timeouts and output limits and supplies shared tool utilities; needed by the task loop and audits.
 - [experiment_sources/agent-interp-envs/src/agent_interp_envs/types.py](../experiment_sources/agent-interp-envs/src/agent_interp_envs/types.py) — [Active shared interface] Defines response, tool-call and tool-result structures used by the original framework and our adapter; preserve it for compatibility.
+
+## Serial-interface feasibility condition
+
+- [src/qwen_adapter/serial_format.py](../src/qwen_adapter/serial_format.py) — [Opt-in serial formatter] Renders the Qwen-specific serial ChatML history and detects tool-result boundaries; use only for the separately versioned serial condition.
+- [configs/precommit_hook_qwen_serial.json](../configs/precommit_hook_qwen_serial.json) — [Offline-tested diagnostic condition] Selects the serial tool format and pins the previously observed model revision; retain separately from baseline configurations.
+- [notebooks/04_serial_interface_colab_mac.ipynb](../notebooks/04_serial_interface_colab_mac.ipynb) — [Serial-condition entry point] Loads matching serial settings for manual Colab transfer in a fresh runtime; use with the bounded diagnostic launcher after verifying the upload package.
+- [tests/test_serial_interface.py](../tests/test_serial_interface.py) — [Serial regression checks] Tests strict calls, generation stopping arguments, observation history and manual boundary bundles using doubles; run without Qwen or Docker.
+- [docs/QWEN_SERIAL_INTERFACE.md](../docs/QWEN_SERIAL_INTERFACE.md) — [Current implementation review] Records the serial condition, offline checks, limitations and next live-evaluation gate; consult before running this condition.
+
+- [docs/validation/2026-10-28_serial_prompt_examples.txt](../docs/validation/2026-10-28_serial_prompt_examples.txt) — [Offline illustration] Preserves rendered serial-format prompts with explicitly scripted observations for review; do not treat them as executed model or Docker evidence.
+
+- [scripts/run_serial_diagnostics.py](../scripts/run_serial_diagnostics.py) — [Bounded interface launcher] Publishes versioned manual diagnostic requests with explicit command spellings and optional remaining-case selection, and records real Docker outputs and human report reviews; use only for interface evaluation, not behavioral collection.
+- [scripts/package_serial_diagnostics.py](../scripts/package_serial_diagnostics.py) — [Upload packaging command] Builds the allowlisted serial Colab ZIP and source/archive checksums under ignored work; use when preparing a matching upload package.
+- [tests/test_serial_diagnostics.py](../tests/test_serial_diagnostics.py) — [Offline orchestration checks] Verifies case progression, explicit separator acceptance, failure-output retention and first-failure action blocking using scripted generation and Docker doubles; retain as launcher regression coverage.
+- [docs/SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md) — [Current execution protocol] Specifies fresh-T4 setup, exact Mac commands, four-case checklist, evidence locations and stop rules; follow for the bounded serial gate.
