@@ -17,10 +17,12 @@ from qwen_adapter.spool import read, write_new
 
 
 class DiagnosticTests(unittest.TestCase):
-    def exercise(self, bad=False, separator=False, start_at='01_pwd'):
+    def exercise(self, bad=False, separator=False, start_at='01_pwd', supplementary=False):
         with tempfile.TemporaryDirectory(dir=ROOT/'results') as temporary:
             run = Path(temporary)/'run'
             calls = []
+            selected = diagnostic.CASES[[case[0] for case in diagnostic.CASES].index(start_at):]
+            extra_args = ['--supplementary', '--suite-budget-seconds', '1800'] if supplementary else []
             def docker(args, **kwargs):
                 calls.append(args)
                 if args[:2] == ['image', 'inspect']:
@@ -46,7 +48,7 @@ class DiagnosticTests(unittest.TestCase):
                 raw = {'text': text, 'raw_decoded_text': text, 'stop_reason': 'eos'}
                 write_new(bridge/f'{cid}.generation.json',raw)
                 return {'request_hash': request['request_hash'], 'parsed': parse_generation(raw,request['settings'])}
-            with patch.object(sys,'argv',['diagnostic','--image','local:test','--run-dir',str(run),'--start-at',start_at]), \
+            with patch.object(sys,'argv',['diagnostic','--image','local:test','--run-dir',str(run),'--start-at',start_at,*extra_args]), \
                  patch.object(diagnostic,'docker',side_effect=docker), \
                  patch.object(diagnostic,'wait_response',side_effect=wait), \
                  patch('builtins.input',return_value='PASS'), contextlib.redirect_stdout(io.StringIO()):
@@ -58,9 +60,15 @@ class DiagnosticTests(unittest.TestCase):
             status=read(run/'status.json')
             self.assertEqual(status['status'], 'stopped_on_first_failure' if bad else ('all_four_passed' if start_at == '01_pwd' else 'selected_cases_passed'))
             executions=[c for c in calls if c[:2]==['exec','--user']]
-            self.assertEqual(len(executions),0 if bad else (5 if start_at == '01_pwd' else 4))
-            self.assertEqual(len(list(run.glob('*/review.json'))),0 if bad else (4 if start_at == '01_pwd' else 3))
+            self.assertEqual(len(executions),0 if bad else sum(len(case[2]) for case in selected))
+            self.assertEqual(len(list(run.glob('*/review.json'))),0 if bad else len(selected))
             self.assertTrue((run/'cleanup.json').exists())
+            self.assertEqual(status['evaluation_scope'], 'supplementary' if supplementary else 'original_gate')
+            if supplementary:
+                self.assertEqual(status['suite_budget_seconds'], 1800)
+                self.assertEqual(status['selected_cases'], ['03_missing', '04_fixture'])
+                self.assertFalse((run/'01_pwd').exists())
+                self.assertFalse((run/'02_quoted').exists())
 
     def test_four_cases_keep_actual_results_and_fixed_call_caps(self):
         self.exercise()
@@ -86,3 +94,6 @@ class DiagnosticTests(unittest.TestCase):
         self.assertFalse(diagnostic.command_allowed('02_quoted', diagnostic.QUOTED,
                         diagnostic.QUOTED.replace('\n', '; ') + '; id'))
         self.assertFalse(diagnostic.command_allowed('03_missing', 'cat missing', 'cat missing; true'))
+
+    def test_supplementary_run_only_requests_missing_and_fixture_cases(self):
+        self.exercise(start_at='03_missing', supplementary=True)

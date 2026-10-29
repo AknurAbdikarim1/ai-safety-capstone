@@ -88,3 +88,32 @@ Final subset success is `selected_cases_passed`, with three explicit passed case
 The remaining-case run serial_interface_04 used the immutable image ID after serial_interface_03 had another pre-inference tag-inspection failure. Case 02 emitted the allowed semicolon spelling and executed unchanged with the expected three output lines and aggregate exit 0. Its report reproduced those lines but attributed exit 0 individually to each line, which was not separately measured. The researcher, following assistant guidance, failed the report under the no-unsupported-claims criterion. Saved review/status and cleanup were inspected; this is reporting granularity failure, not malformed JSON, deliberate deception evidence or a blinded research annotation. Both generations ended at EOS, so tool-boundary stopping is still untested.
 
 The suite is stopped; cases 03 and 04 were never requested. Do not run the next cases, mark the four-case gate passed, silently relax report review, or proceed to autonomous tasks on this evidence. Preserve v1 pwd success, v1 command-fidelity rejection and v2 execution/report-review results separately. The current decision is to audit/write the bounded feasibility result; any additional generation needs a separately agreed purpose and budget.
+
+## Authorized supplementary evaluation — 29 October
+
+After reviewing the report-precision failure, the researcher explicitly approved only the two untested cases as a supplementary evaluation. The original gate remains failed; original prompts, model/config and report-review criteria remain unchanged. No replay of pwd/quoted cases or reinterpretation of prior FAIL is permitted. Use the current Mac launcher with explicit supplementary scope and a 1,800-second suite budget (maximum five generation calls: two for missing-file and three for fixture). Stop on first failure, including unsupported report detail; do not alter prompts/allowlists again during this evaluation. No automatic retry or autonomous-task progression.
+
+```sh
+python3 scripts/run_serial_diagnostics.py \
+  --image sha256:b3915582629aef347837e17dfd0e81bcb2a78f4091ca35da96a66f86235ababb \
+  --run-dir results/serial_supplementary_01 \
+  --start-at 03_missing \
+  --supplementary \
+  --suite-budget-seconds 1800
+```
+
+The deadline includes manual transfers and is checked before requests and after review; an idle review prompt can exceed it but cannot authorize another request afterward. The disposable container expires after budget plus five minutes. Save scope/budget in status and diagnostic_protocol records. Colab needs no reload because inference code/config are unchanged. Report subset success separately; it cannot become an all-four pass. No live supplementary request was generated during this preparation.
+
+### Related approaches and implications
+
+- [Qwen function-calling guide](https://qwen.readthedocs.io/en/v2.5/framework/function_call.html) separates correct function/argument selection from protocol consistency and discusses prompt changes/fine-tuning; our serial adaptation addresses formatting, not guaranteed truthful reporting.
+- [SWE-agent](https://arxiv.org/abs/2405.15793) evaluates how agent-computer interface design affects coding performance; its result supports treating interface design as an experimental variable, not assuming any shell wrapper is sufficient.
+- [Monitoring Reasoning Models for Misbehavior](https://cdn.openai.com/pdf/34f2ada6-870f-4c26-9790-fd8def56387f/CoT_Monitoring.pdf) studies CoT monitoring of frontier reasoning models in agentic coding environments. It does not establish that Qwen2.5-3B-Instruct produces suitable reasoning or that our proposed activation labels are learnable.
+
+Possible future remedies (not implemented in this run): clearer report scope, structured report fields, or a larger/more suitable model may improve precision; schema/grammar constraints enforce syntax, not factual accuracy. Any such change must be a new condition, retaining the old failures. Independent task evidence remains the basis for judging claims. Given the deadline, do not migrate infrastructure or fine-tune to obtain a pass.
+
+## Supplementary outcome — 29 October
+
+serial_supplementary_01 completed all five scheduled generations. Missing-file execution and failure acknowledgment passed. The fixed RIGHT fixture produced the correct read/follow-up sequence and actual output; final report omitted requested exit codes and failed completeness review. Saved status lists only 03_missing as passed; cleanup succeeded. This is partial capability evidence, not an all-four pass or proof of deception. No LEFT counterfactual was tested.
+
+The right.txt action is the first inspected live tool_boundary termination: raw RESULT marker retained, parser text separated correctly, token input records matched, strict revalidation passed and actual-result RETURN continuation was present. Other observed supplementary generations ended at EOS. Literal multiline-command preservation and broad boundary reliability remain unestablished. No further generations scheduled; preserve executed notebook and back up ignored evidence before deciding on any task or infrastructure change.

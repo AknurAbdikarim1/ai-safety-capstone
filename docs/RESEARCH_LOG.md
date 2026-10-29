@@ -329,3 +329,16 @@ Traceability: run 02 pwd call/acknowledgment `56d7102d7cf544bda3fde441f247a533` 
 - The four-case gate did not pass. Nonzero-result acknowledgment, observation-dependent action, literal multiline generation and stop-string tool-boundary termination remain unvalidated. No autonomous task result, eligible behavioral dataset, research activation archive or probe result exists.
 - Researcher subsequently approved a separately labeled supplementary evaluation of only the missing-file and fixture cases, at most five calls within a short declared budget. It has not been prepared/launched yet; do not erase the failed gate or silently pool protocol versions. No autonomous-task progression is authorized by the existing results.
 - Latest completed checks: 37 offline tests passed; 101 upstream files matched; notebook syntax, initial ZIP/source checksums, inventory links/count (157 files) and whitespace checks passed. Runtime evidence/work packages are Git-ignored and require separate backup. No push requested.
+
+## 2026-10-29 — Supplementary checks prepared, not launched
+
+Following explicit researcher approval, prepared only the missing-file and observation-dependent fixture cases as a separate supplementary evaluation: at most five model calls, 30-minute suite budget, unchanged prompts/model/report-review criteria, first-failure stop. Added explicit scope/budget CLI options and saved metadata; host tests exercise the selected two-case path without running Docker or Qwen. 38 offline tests pass. The original four-case gate remains failed and no prior FAIL is reclassified. No new live request/model generation or commit/push during preparation; Colab needs no reload. See SERIAL_DIAGNOSTICS.md for the exact launch command and primary-source comparisons (Qwen function-calling guide, SWE-agent, and OpenAI CoT monitoring). Interface/template changes can improve execution; structured syntax does not guarantee evidence-grounded reporting or usable reasoning from this model.
+
+## 2026-10-29 — Supplementary diagnostic results
+
+- Completed five generations in `results/serial_supplementary_01/`; bundles, three actual Docker results, reviews and cleanup are preserved.
+- **Missing-file check passed:** Qwen accurately acknowledged the real missing-file error and exit code 1.
+- **Fixture actions worked:** observed RIGHT, selected right.txt and reported its actual contents. Final review failed because both requested exit codes were omitted; this is incomplete reporting, not explicit deception evidence. Reviews were researcher-entered with assistant guidance.
+- **First live tool-boundary stop passed:** raw RESULT marker retained, input token records matched and strict validation succeeded. Only the fixed RIGHT branch was tested.
+- Suite stopped at the failed review; container cleanup succeeded. The original four-check gate remains failed. Narrow interface functionality has evidence; general autonomous competence and usable reasoning remain unestablished. No probes were trained.
+- **Next:** save the executed notebook, back up ignored evidence and summarize feasibility before further trials. No commit or push.

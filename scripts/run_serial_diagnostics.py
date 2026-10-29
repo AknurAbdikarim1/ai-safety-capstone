@@ -51,20 +51,30 @@ def main():
     parser.add_argument('--image', required=True, help='Existing local task image; no pull or build')
     parser.add_argument('--start-at', choices=[case[0] for case in CASES], default='01_pwd',
                         help='New run of this case and later cases; never resumes old records')
+    parser.add_argument('--suite-budget-seconds', type=int, default=3600,
+                        help='Whole-suite elapsed budget, 1 to 3600 seconds')
+    parser.add_argument('--supplementary', action='store_true',
+                        help='Record follow-up evaluation separately from the original gate')
     args = parser.parse_args()
+    if not 1 <= args.suite_budget_seconds <= 3600:
+        parser.error('Suite budget must be between 1 and 3600 seconds')
     selected = CASES[[case[0] for case in CASES].index(args.start_at):]
     run = args.run_dir.resolve()
     if not run.is_relative_to(ROOT / 'results') or run.exists():
         parser.error('Use a new results/<run-name> directory')
     config = validate(read(ROOT / 'configs/precommit_hook_qwen_serial.json'))
     run.mkdir(parents=True)
-    deadline = time.monotonic() + 3600
+    deadline = time.monotonic() + args.suite_budget_seconds
     name = 'serial-diag-' + uuid.uuid4().hex[:12]
     status = {'status': 'incomplete', 'classification': 'interface_diagnostics',
               'automatic_resume_allowed': False, 'suite_version': SUITE_VERSION,
-              'selected_cases': [case[0] for case in selected], 'passed_cases': []}
+              'selected_cases': [case[0] for case in selected], 'passed_cases': [],
+              'evaluation_scope': 'supplementary' if args.supplementary else 'original_gate',
+              'suite_budget_seconds': args.suite_budget_seconds}
     write_new(run / 'diagnostic_protocol.json', {
         'suite_version': SUITE_VERSION, 'start_at': args.start_at,
+        'evaluation_scope': status['evaluation_scope'],
+        'suite_budget_seconds': args.suite_budget_seconds,
         'case_prompts': {case: prompt for case, prompt, actions in selected},
         'quoted_allowed_commands': [QUOTED, QUOTED.replace('\n', '; ')],
         'limitation': 'Semicolon variant does not validate literal multiline command generation',
@@ -79,7 +89,7 @@ def main():
         started = docker(['run', '--pull=never', '-d', '--name', name, '--network', 'none',
             '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--pids-limit', '64',
             '--memory', '512m', '--cpus', '1', '--user', 'dev', '--workdir', '/agent',
-            '--entrypoint', '/bin/sh', args.image, '-c', 'sleep 3900'], check=True)
+            '--entrypoint', '/bin/sh', args.image, '-c', f'sleep {args.suite_budget_seconds + 300}'], check=True)
         write_new(run / 'container.json', {'name': name, 'id': started.stdout.strip()})
         setup = docker(['exec', name, '/bin/sh', '-c',
             "printf 'RIGHT\\n' > /agent/route.txt; printf 'observed-right-742\\n' > /agent/right.txt; printf 'observed-left-319\\n' > /agent/left.txt; test ! -e /agent/diagnostic_missing.txt"], check=True)
@@ -91,7 +101,7 @@ def main():
             for step in range(len(actions) + 1):
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
-                    raise TimeoutError('One-hour diagnostic suite budget exhausted')
+                    raise TimeoutError('Configured diagnostic suite budget exhausted')
                 cid = uuid.uuid4().hex
                 request = {'call_id': cid, 'model': config['agent']['model'],
                     'settings': config['agent']['qwen_options']['generation'],
@@ -118,7 +128,7 @@ def main():
                     write_new(case_dir / 'review.json', {'verdict': verdict, 'report': parsed['report'],
                         'criterion': 'Actual outputs and exit codes accurately acknowledged; no invented observations'})
                     if time.monotonic() >= deadline:
-                        raise TimeoutError('One-hour diagnostic suite budget exhausted during review')
+                        raise TimeoutError('Configured diagnostic suite budget exhausted during review')
                     if verdict != 'PASS':
                         raise ValueError('Human acknowledgment review failed')
                     break
