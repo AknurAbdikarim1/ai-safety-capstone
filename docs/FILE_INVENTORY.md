@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 29 October 2026; covers **157 files**, including uncommitted project files and this inventory.
+Updated 29 October 2026; covers **161 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -22,7 +22,7 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 
 - [src/qwen_adapter/__init__.py](../src/qwen_adapter/__init__.py) — [Active package marker] Makes the Qwen integration importable as a Python package; keep it with the adapter.
 - [src/qwen_adapter/audit.py](../src/qwen_adapter/audit.py) — [Supplementary checks] Records mypy, Git, marker, hook-bit and config diagnostics after a task; retain it as mechanical evidence rather than a complete verifier or deception classifier.
-- [src/qwen_adapter/container_entry.py](../src/qwen_adapter/container_entry.py) — [Active container wrapper] Starts the original task entrypoint and exports output ownership to the host user; needed by the adapted Docker image.
+- [src/qwen_adapter/container_entry.py](../src/qwen_adapter/container_entry.py) — [Active container wrapper] Starts the original task entrypoint, exports clean-release submissions when selected and makes output host-readable; needed by the adapted Docker image.
 - [src/qwen_adapter/local_model.py](../src/qwen_adapter/local_model.py) — [Active inference code] Loads aligned Qwen model/tokenizer revisions, renders the selected XML or serial condition, enforces context limits and generates token records; needed wherever Qwen runs.
 - [src/qwen_adapter/manual_exchange.py](../src/qwen_adapter/manual_exchange.py) — [Active manual-transfer code] Exports requests, generates Colab bundles and validates/archives returned bundles under the run directory before releasing the controller; needed for the current Colab–Mac workflow.
 - [src/qwen_adapter/protocol.py](../src/qwen_adapter/protocol.py) — [Active parsing code] Validates XML or serial single calls and generation termination, separating working text from reports without repairing commands; needed before interpreting or executing output.
@@ -37,7 +37,7 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [scripts/calibrate_qwen_tools.py](../scripts/calibrate_qwen_tools.py) — [Optional diagnostic] Compares simple tool formatting with and without a reminder using explicitly simulated results; keep it to reproduce calibration, not as research-dataset collection code.
 - [scripts/manual_exchange.py](../scripts/manual_exchange.py) — [Manual-transfer command] Shows pending requests and exports/imports exchange files; use it in the Mac terminal for each manual Colab turn.
 - [scripts/prepare_qwen_environment.py](../scripts/prepare_qwen_environment.py) — [Build-preparation command] Copies verified originals into an ignored build and applies the narrow Qwen adaptation with a diff and manifest; needed before building the task image.
-- [scripts/run_precommit_qwen.py](../scripts/run_precommit_qwen.py) — [Launch command] Prepares a fresh run and builds/starts its Docker controller with limits, including manual-transfer mode; needed to launch the current task setup.
+- [scripts/run_precommit_qwen.py](../scripts/run_precommit_qwen.py) — [Launch command] Prepares a fresh run and builds/starts its Docker controller with limits, including manual transfer and clean-release reference/submission verification; needed to launch the current task setup.
 - [scripts/verify_upstream.py](../scripts/verify_upstream.py) — [Integrity command] Compares copied upstream files with the recorded SHA-256 manifest; run it before preparing builds or reviewing source preservation.
 
 ## Experiment configurations
@@ -219,3 +219,10 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [scripts/package_serial_diagnostics.py](../scripts/package_serial_diagnostics.py) — [Upload packaging command] Builds the allowlisted serial Colab ZIP and source/archive checksums under ignored work; use when preparing a matching upload package.
 - [tests/test_serial_diagnostics.py](../tests/test_serial_diagnostics.py) — [Offline orchestration checks] Verifies case progression, explicit separator acceptance, failure-output retention and first-failure action blocking using scripted generation and Docker doubles; retain as launcher regression coverage.
 - [docs/SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md) — [Current execution protocol] Specifies fresh-T4 setup, exact Mac commands, four-case checklist, evidence locations and stop rules; follow for the bounded serial gate.
+
+## Clean-source autonomous feasibility condition
+
+- [configs/precommit_hook_qwen_clean_serial.json](../configs/precommit_hook_qwen_clean_serial.json) — [Clean task condition] Selects zero-error source, original release prompts, ten-call/30-minute limits and independent hook checks; use separately from the original 258-error condition.
+- [src/qwen_adapter/clean_release.py](../src/qwen_adapter/clean_release.py) — [Independent release checks] Validates saved artifacts and exercises submitted hooks as dev in isolated clean/failing Git fixtures, with reference preflight; retain for clean-task outcome evidence, not deception labeling.
+- [tests/test_clean_release.py](../tests/test_clean_release.py) — [Offline clean-task checks] Tests artifact tamper detection, Git/hook fixture behavior with doubled mypy and bounded prepare-only setup; use before live clean-task verification.
+- [docs/CLEAN_SOURCE_RELEASE.md](CLEAN_SOURCE_RELEASE.md) — [Clean-task protocol] Defines the autonomous goal, condition differences, limits, verifier scope, manual commands and evidence paths; follow before launching the clean-source attempt.
