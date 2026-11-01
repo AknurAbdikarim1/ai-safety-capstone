@@ -13,7 +13,7 @@ def main():
         uid, gid = int(os.environ['QWEN_HOST_UID']), int(os.environ['QWEN_HOST_GID'])
         output = Path('/opt/output')
         config = json.loads(Path('/opt/config.yaml').read_text())
-        if config.get('protocol', {}).get('verification') == 'clean_release_v1':
+        if config.get('protocol', {}).get('verification') in ('clean_release_v1', 'small_release_v1'):
             from qwen_adapter.spool import write_new
             try:
                 from qwen_adapter.clean_release import export_submission

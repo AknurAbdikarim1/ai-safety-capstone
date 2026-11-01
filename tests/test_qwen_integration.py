@@ -238,6 +238,67 @@ class UpstreamIntegrationTests(unittest.TestCase):
             stop.set()
             worker.join(2)
 
+    def test_thinking_controller_consumes_real_result_then_finishes(self):
+        import run_step
+        from states import CodingAgentState
+        from agent_interp_envs.providers import create_provider
+        from test_thinking_interface import SETTINGS, record
+        class Engine(FakeEngine):
+            model_id = 'Qwen/Qwen3-4B-Thinking-2507'
+            settings = SETTINGS
+            def generate(self, request, on_input=None):
+                first = self.calls == 0
+                if not first:
+                    assert 'actual missing-file error' in request['messages'][-1]['content']
+                    assert request['messages'][-2]['reasoning_content']
+                self.calls += 1
+                raw = record(value='cat missing') if first else record('final_report','report','File missing; task incomplete.')
+                if on_input: on_input({'input_token_ids': raw['input_token_ids']})
+                return raw
+        with tempfile.TemporaryDirectory() as directory:
+            provider = create_provider(provider='qwen_local', model=Engine.model_id,
+                messages=[{'role':'system','content':'Shell'},{'role':'user','content':'Task'}],
+                tools=[{'type':'function','function':{'name':'execute_command'}}],
+                qwen_options={'bridge_dir':directory,'timeout_seconds':2,'generation':SETTINGS})
+            state = CodingAgentState()
+            engine = Engine('')
+            with patch.object(run_step,'run_command',return_value=(1,'actual missing-file error')) as execute, contextlib.redirect_stdout(io.StringIO()):
+                provider.invoke_original = provider.invoke
+                with patch.object(provider,'invoke',side_effect=lambda:self.roundtrip_invoke(provider,engine)):
+                    self.assertFalse(run_step.run_step(provider,state,{}))
+                    self.assertTrue(run_step.run_step(provider,state,{}))
+            execute.assert_called_once_with('cat missing')
+            self.assertEqual(provider.messages[-1]['content'],'File missing; task incomplete.')
+            self.assertTrue(provider.messages[-1]['reasoning_content'])
+
+    def test_hybrid_factory_and_generated_opening_roundtrip(self):
+        from agent_interp_envs.providers import create_provider
+        from agent_interp_envs.types import ToolResult
+        from test_thinking_interface import hybrid_record
+        cfg=json.loads((ROOT/'configs/precommit_hook_qwen3_hybrid_clean.json').read_text())
+        class Engine(FakeEngine):
+            model_id=cfg['agent']['model']
+            settings=cfg['agent']['qwen_options']['generation']
+            def generate(self,request,on_input=None):
+                if self.calls:
+                    assert 'actual exit 0' in request['messages'][-1]['content']
+                raw=hybrid_record() if not self.calls else hybrid_record('final_report','report','Observed actual exit 0.')
+                self.calls+=1
+                if on_input:on_input({'input_token_ids':raw['input_token_ids']})
+                return raw
+        with tempfile.TemporaryDirectory() as directory:
+            provider=create_provider(provider='qwen_local',model=Engine.model_id,
+                messages=[{'role':'system','content':'Shell'},{'role':'user','content':'Inspect'}],
+                tools=[{'type':'function','function':{'name':'execute_command'}}],
+                qwen_options={'bridge_dir':directory,'timeout_seconds':2,'generation':Engine.settings})
+            engine=Engine('')
+            response=self.roundtrip(provider,engine)
+            self.assertEqual(json.loads(response.tool_calls[0].arguments),{'command':'pwd'})
+            provider.add_tool_result(ToolResult(response.tool_calls[0].id,'execute_command','actual exit 0'))
+            response=self.roundtrip(provider,engine)
+            self.assertEqual(response.response,'Observed actual exit 0.')
+            self.assertNotIn('<think>',provider.messages[-1]['reasoning_content'])
+
     def test_config_forwarding_and_generated_source_syntax(self):
         from agent_interp_envs.checkpoint import provider_kwargs
         cfg = json.loads((ROOT / 'configs/precommit_hook_qwen_original.json').read_text())

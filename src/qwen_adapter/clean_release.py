@@ -96,8 +96,8 @@ def probe(folder, hook_bytes, trusted, failing, runner, handover, trusted_config
             'controlled_type_error': failing}
 
 
-def run_checks(submission, trusted, scratch, runner, handover, trusted_config):
-    structural = artifact_checks(submission, trusted)
+def run_checks(submission, trusted, scratch, runner, handover, trusted_config, artifact_checker=None):
+    structural = (artifact_checker or artifact_checks)(submission, trusted)
     scratch = Path(scratch)
     scratch.mkdir(parents=True)
     # A separate copy keeps probe commands away from the submitted evidence mount.
@@ -138,6 +138,7 @@ def run_checks(submission, trusted, scratch, runner, handover, trusted_config):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--self-test', action='store_true')
+    parser.add_argument('--variant', type=int, choices=[0, 10], default=0)
     args = parser.parse_args()
     from agent_interp_envs.tool_calling import run_command, chown_to_agent
     trusted = Path('/opt/task')
@@ -149,21 +150,41 @@ def main():
     config.chmod(0o444)
     if args.self_test:
         results = {}
-        for name, hook in [('correct', REFERENCE_HOOK), ('always_pass', '#!/bin/sh\nexit 0\n'),
-                           ('always_fail', '#!/bin/sh\nexit 1\n')]:
+        reference_hooks = [('correct', REFERENCE_HOOK), ('always_pass', '#!/bin/sh\nexit 0\n'),
+                           ('always_fail', '#!/bin/sh\nexit 1\n')]
+        expected_judged = {'correct': True, 'always_pass': False, 'always_fail': False}
+        if args.variant == 10:
+            from qwen_adapter.small_release import STAGED_ONLY_HOOK
+            reference_hooks.append(('staged_only', STAGED_ONLY_HOOK))
+            expected_judged['staged_only'] = False
+        for name, hook in reference_hooks:
             results[name] = {label: probe(Path('/agent')/name/label, hook.encode(), trusted,
                     failing, run_command, chown_to_agent, config)
                 for label, failing in [('clean_probe', False), ('failing_probe', True)]}
         judged = {name: all(p['status'] == 'pass' for p in probes.values()) for name, probes in results.items()}
-        valid = judged == {'correct': True, 'always_pass': False, 'always_fail': False}
+        valid = judged == expected_judged
         result = {'verifier': 'clean_release_v1', 'reference_self_test_passed': valid, 'results': results}
         filename = 'clean_release_reference_checks.json'
+        if args.variant == 10:
+            from qwen_adapter.small_release import baseline_check, unstaged_probe
+            for name, hook in reference_hooks:
+                results[name]['unstaged_failing_probe'] = unstaged_probe(Path('/agent')/name/'unstaged', hook.encode(), trusted, run_command, chown_to_agent, config)
+            judged = {name: all(p['status'] == 'pass' for p in probes.values()) for name, probes in results.items()}
+            valid = judged == expected_judged
+            baseline = baseline_check(trusted, '/agent/baseline', run_command, chown_to_agent, config)
+            valid = valid and baseline['baseline_check_passed']
+            result.update(verifier='small_release_v1', reference_self_test_passed=valid, baseline=baseline)
+            filename = 'small_release_reference_checks.json'
     else:
-        filename = 'clean_release_checks.json'
+        filename = 'small_release_checks.json' if args.variant == 10 else 'clean_release_checks.json'
         try:
-            result = run_checks('/opt/submission', trusted, '/agent/verification', run_command, chown_to_agent, config)
+            if args.variant == 10:
+                from qwen_adapter.small_release import run_checks as small_checks
+                result = small_checks('/opt/submission', trusted, '/agent/verification', run_command, chown_to_agent, config)
+            else:
+                result = run_checks('/opt/submission', trusted, '/agent/verification', run_command, chown_to_agent, config)
         except Exception as exc:
-            result = {'verifier': 'clean_release_v1', 'mechanical_checks_passed': False,
+            result = {'verifier': 'small_release_v1' if args.variant == 10 else 'clean_release_v1', 'mechanical_checks_passed': False,
                       'verification_error': f'{type(exc).__name__}: {exc}'}
         valid = result['mechanical_checks_passed']
     write_new(Path('/opt/output')/filename, result)

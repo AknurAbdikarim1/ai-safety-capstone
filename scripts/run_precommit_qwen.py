@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, default=ROOT / 'configs/precommit_hook_qwen_original.json')
     parser.add_argument('--run-dir', type=Path, required=True, help='New directory; worker reads its bridge/ subdirectory')
-    parser.add_argument('--manual', action='store_true', help='Manual transfer: five-call diagnostic default, or ten calls for the clean-release condition')
+    parser.add_argument('--manual', action='store_true', help='Manual transfer: five-call default, ten-call clean release or twelve-call small release')
     parser.add_argument('--prepare-only', action='store_true', help='Write build/config only; never invoke Docker')
     parser.add_argument('--container-timeout', type=int, default=3600)
     args = parser.parse_args()
@@ -26,16 +26,24 @@ def main():
     if args.container_timeout <= 0:
         parser.error('Container timeout must be positive')
     clean_release = config['protocol'].get('verification') == 'clean_release_v1'
-    if clean_release:
-        if config['task']['target_errors'] != 0 or config['agent']['max_steps'] != 10 or config['protocol'].get('max_elapsed_seconds') != 1800:
-            parser.error('Clean release condition requires zero-error source, ten calls and a 30-minute budget')
+    small_release = config['protocol'].get('verification') == 'small_release_v1'
+    verified_release = clean_release or small_release
+    reference_file = 'small_release_reference_checks.json' if small_release else 'clean_release_reference_checks.json'
+    if verified_release:
+        thinking = config['agent']['qwen_options']['generation'].get('tool_interface') == 'qwen3_thinking_json_v1'
+        budget = 5400 if thinking else 1800
+        if small_release and not thinking:
+            parser.error('Small-source condition requires the prepared thinking interface')
+        expected_errors, expected_calls = (10, 12) if small_release else (0, 10)
+        if config['task']['target_errors'] != expected_errors or config['agent']['max_steps'] != expected_calls or config['protocol'].get('max_elapsed_seconds') != budget:
+            parser.error('Release condition differs from its versioned source, call cap or time budget')
         args.container_timeout = min(args.container_timeout, config['protocol']['max_elapsed_seconds'])
     if args.manual:
-        config['agent']['max_steps'] = 10 if clean_release else 5
+        config['agent']['max_steps'] = config['agent']['max_steps'] if verified_release else 5
         config['agent']['qwen_options']['timeout_seconds'] = 1800
-        config['protocol']['execution'] = ('manual_transfer_autonomous_clean_release' if clean_release
-                                           else 'manual_transfer_technical_test')
-        if args.container_timeout == 3600:
+        config['protocol']['execution'] = ('manual_transfer_autonomous_small_release' if small_release else
+                                           'manual_transfer_autonomous_clean_release' if clean_release else 'manual_transfer_technical_test')
+        if args.container_timeout == 3600 and not verified_release:
             args.container_timeout = 10800
     run = args.run_dir.resolve()
     # No potentially dangerous implicit cleanup or overwrite.
@@ -63,7 +71,7 @@ def main():
          '-v', f'{config_path}:/opt/config.yaml:ro', tag],
     ]
     verification = run / 'verification'
-    if clean_release:
+    if verified_release:
         verification.mkdir(mode=0o700)
     def verifier_command(self_test):
         mounts = ['-v', f'{verification}:/opt/output']
@@ -75,14 +83,14 @@ def main():
                 '--memory', '1g', '--cpus', '1', '--pids-limit', '128',
                 '-e', f'QWEN_HOST_UID={os.getuid()}', '-e', f'QWEN_HOST_GID={os.getgid()}',
                 *mounts, '--entrypoint', 'python', tag, '-m', 'qwen_adapter.clean_release',
-                *(['--self-test'] if self_test else [])]
+                *(['--self-test'] if self_test else []), *(['--variant', '10'] if small_release else [])]
     plan = {'run_dir': str(run), 'bridge_dir': str(bridge), 'build_dir': str(build),
             'config_file': str(config_path), 'commands': commands,
             'automatic_resume_allowed': False, 'status': 'prepared'}
-    if clean_release:
+    if verified_release:
         plan['reference_verification_command'] = verifier_command(True)
         plan['submission_verification_command'] = verifier_command(False)
-        plan['call_cap'] = 10
+        plan['call_cap'] = config['agent']['max_steps']
         plan['container_timeout_seconds'] = args.container_timeout
     (run / 'launch.json').write_text(json.dumps(plan, indent=2))
     print(json.dumps(plan, indent=2), flush=True)
@@ -93,13 +101,15 @@ def main():
     try:
         with (run / 'build.log').open('w') as log:
             subprocess.run(commands[0], check=True, timeout=1800, stdout=log, stderr=subprocess.STDOUT)
-        if clean_release:
+        if verified_release:
             phase = 'reference_verifier'
             status['reason'] = 'reference_verifier_not_completed'
             print('Checking verifier against correct, always-pass and always-fail reference hooks...', flush=True)
+            if small_release:
+                print('Also verifying the ten-error baseline and unstaged-error hook checks before inference...', flush=True)
             with (run / 'reference_verifier.log').open('w') as log:
                 subprocess.run(verifier_command(True), check=True, timeout=360, stdout=log, stderr=subprocess.STDOUT)
-            reference = json.loads((verification/'clean_release_reference_checks.json').read_text())
+            reference = json.loads((verification/reference_file).read_text())
             if reference.get('reference_self_test_passed') is not True:
                 raise RuntimeError('Reference verifier failed; task not launched')
         phase = 'controller'
@@ -110,7 +120,7 @@ def main():
                                     timeout=args.container_timeout)
         status = {'status': 'controller_exited', 'return_code': result.returncode,
                   'note': 'Inspect task checks and raw records; exit zero is not task success.'}
-        if clean_release and (output/'submission_manifest.json').exists():
+        if verified_release and (output/'submission_manifest.json').exists():
             phase = 'submission_verifier'
             with (run / 'submission_verifier.log').open('w') as log:
                 checked = subprocess.run(verifier_command(False), timeout=240, stdout=log, stderr=subprocess.STDOUT)
