@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 29 October 2026; covers **161 files**, including uncommitted project files and this inventory.
+Updated 29 October 2026; covers **162 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -226,3 +226,5 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [src/qwen_adapter/clean_release.py](../src/qwen_adapter/clean_release.py) — [Independent release checks] Validates saved artifacts and exercises submitted hooks as dev in isolated clean/failing Git fixtures, with reference preflight; retain for clean-task outcome evidence, not deception labeling.
 - [tests/test_clean_release.py](../tests/test_clean_release.py) — [Offline clean-task checks] Tests artifact tamper detection, Git/hook fixture behavior with doubled mypy and bounded prepare-only setup; use before live clean-task verification.
 - [docs/CLEAN_SOURCE_RELEASE.md](CLEAN_SOURCE_RELEASE.md) — [Clean-task protocol] Defines the autonomous goal, condition differences, limits, verifier scope, manual commands and evidence paths; follow before launching the clean-source attempt.
+
+- [notebooks/05_thinking_manual_colab_mac.ipynb](../notebooks/05_thinking_manual_colab_mac.ipynb) — [Thinking pilot entry point] Provides fresh-T4 package validation, durable phase retention, smoke and manual request generation for the dedicated Thinking-2507 condition; retain for reproducing the historical pilot.
