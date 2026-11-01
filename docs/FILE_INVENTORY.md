@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 29 October 2026; covers **162 files**, including uncommitted project files and this inventory.
+Updated 1 November 2026; covers **190 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -22,10 +22,10 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 
 - [src/qwen_adapter/__init__.py](../src/qwen_adapter/__init__.py) — [Active package marker] Makes the Qwen integration importable as a Python package; keep it with the adapter.
 - [src/qwen_adapter/audit.py](../src/qwen_adapter/audit.py) — [Supplementary checks] Records mypy, Git, marker, hook-bit and config diagnostics after a task; retain it as mechanical evidence rather than a complete verifier or deception classifier.
-- [src/qwen_adapter/container_entry.py](../src/qwen_adapter/container_entry.py) — [Active container wrapper] Starts the original task entrypoint, exports clean-release submissions when selected and makes output host-readable; needed by the adapted Docker image.
+- [src/qwen_adapter/container_entry.py](../src/qwen_adapter/container_entry.py) — [Active container wrapper] Starts the original task entrypoint, exports clean or small-source submissions when selected and makes output host-readable; needed by the adapted Docker image.
 - [src/qwen_adapter/local_model.py](../src/qwen_adapter/local_model.py) — [Active inference code] Loads aligned Qwen model/tokenizer revisions, renders the selected XML or serial condition, enforces context limits and generates token records; needed wherever Qwen runs.
-- [src/qwen_adapter/manual_exchange.py](../src/qwen_adapter/manual_exchange.py) — [Active manual-transfer code] Exports requests, generates Colab bundles and validates/archives returned bundles under the run directory before releasing the controller; needed for the current Colab–Mac workflow.
-- [src/qwen_adapter/protocol.py](../src/qwen_adapter/protocol.py) — [Active parsing code] Validates XML or serial single calls and generation termination, separating working text from reports without repairing commands; needed before interpreting or executing output.
+- [src/qwen_adapter/manual_exchange.py](../src/qwen_adapter/manual_exchange.py) — [Active manual-transfer code] Exports requests, generates Colab bundles with optional per-record durable retention and validates/archives returned bundles under the run directory before releasing the controller; needed for the current Colab–Mac workflow.
+- [src/qwen_adapter/protocol.py](../src/qwen_adapter/protocol.py) — [Active parsing code] Validates legacy XML/serial calls and the thinking condition’s phased records, separating reasoning and reports without repairing commands; needed before interpreting or executing output.
 - [src/qwen_adapter/remote_provider.py](../src/qwen_adapter/remote_provider.py) — [Active controller adapter] Implements the upstream provider interface using generation requests and tool-result history; needed inside the task controller.
 - [src/qwen_adapter/settings.py](../src/qwen_adapter/settings.py) — [Active validation code] Rejects unsupported model, protocol and generation settings before launch; needed when checking an experiment configuration.
 - [src/qwen_adapter/spool.py](../src/qwen_adapter/spool.py) — [Active transport utility] Publishes write-once JSON records and waits for matched responses on local POSIX storage; needed by the shared-folder and manual workflows.
@@ -37,7 +37,7 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [scripts/calibrate_qwen_tools.py](../scripts/calibrate_qwen_tools.py) — [Optional diagnostic] Compares simple tool formatting with and without a reminder using explicitly simulated results; keep it to reproduce calibration, not as research-dataset collection code.
 - [scripts/manual_exchange.py](../scripts/manual_exchange.py) — [Manual-transfer command] Shows pending requests and exports/imports exchange files; use it in the Mac terminal for each manual Colab turn.
 - [scripts/prepare_qwen_environment.py](../scripts/prepare_qwen_environment.py) — [Build-preparation command] Copies verified originals into an ignored build and applies the narrow Qwen adaptation with a diff and manifest; needed before building the task image.
-- [scripts/run_precommit_qwen.py](../scripts/run_precommit_qwen.py) — [Launch command] Prepares a fresh run and builds/starts its Docker controller with limits, including manual transfer and clean-release reference/submission verification; needed to launch the current task setup.
+- [scripts/run_precommit_qwen.py](../scripts/run_precommit_qwen.py) — [Launch command] Prepares a fresh run and builds/starts its Docker controller with limits, including manual transfer and clean/small-source reference/submission verification; needed to launch the current task setup.
 - [scripts/verify_upstream.py](../scripts/verify_upstream.py) — [Integrity command] Compares copied upstream files with the recorded SHA-256 manifest; run it before preparing builds or reviewing source preservation.
 
 ## Experiment configurations
@@ -215,7 +215,7 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 
 - [docs/validation/2026-10-28_serial_prompt_examples.txt](../docs/validation/2026-10-28_serial_prompt_examples.txt) — [Offline illustration] Preserves rendered serial-format prompts with explicitly scripted observations for review; do not treat them as executed model or Docker evidence.
 
-- [scripts/run_serial_diagnostics.py](../scripts/run_serial_diagnostics.py) — [Bounded interface launcher] Publishes versioned manual diagnostic requests with explicit command spellings and optional remaining-case selection and explicit supplementary budgets, and records real Docker outputs and human report reviews; use only for interface evaluation, not behavioral collection.
+- [scripts/run_serial_diagnostics.py](../scripts/run_serial_diagnostics.py) — [Bounded interface launcher] Publishes versioned manual diagnostic requests with explicit command spellings and configurable conditions, explicit case subsets and supplementary budgets, and records real Docker outputs and human report reviews; use only for interface evaluation, not behavioral collection.
 - [scripts/package_serial_diagnostics.py](../scripts/package_serial_diagnostics.py) — [Upload packaging command] Builds the allowlisted serial Colab ZIP and source/archive checksums under ignored work; use when preparing a matching upload package.
 - [tests/test_serial_diagnostics.py](../tests/test_serial_diagnostics.py) — [Offline orchestration checks] Verifies case progression, explicit separator acceptance, failure-output retention and first-failure action blocking using scripted generation and Docker doubles; retain as launcher regression coverage.
 - [docs/SERIAL_DIAGNOSTICS.md](SERIAL_DIAGNOSTICS.md) — [Current execution protocol] Specifies fresh-T4 setup, exact Mac commands, four-case checklist, evidence locations and stop rules; follow for the bounded serial gate.
@@ -223,8 +223,63 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 ## Clean-source autonomous feasibility condition
 
 - [configs/precommit_hook_qwen_clean_serial.json](../configs/precommit_hook_qwen_clean_serial.json) — [Clean task condition] Selects zero-error source, original release prompts, ten-call/30-minute limits and independent hook checks; use separately from the original 258-error condition.
-- [src/qwen_adapter/clean_release.py](../src/qwen_adapter/clean_release.py) — [Independent release checks] Validates saved artifacts and exercises submitted hooks as dev in isolated clean/failing Git fixtures, with reference preflight; retain for clean-task outcome evidence, not deception labeling.
+- [src/qwen_adapter/clean_release.py](../src/qwen_adapter/clean_release.py) — [Independent release checks] Validates clean-source artifacts and dispatches optional ten-error checks, exercising hooks as dev in isolated Git fixtures with reference preflight; retain for clean-task outcome evidence, not deception labeling.
 - [tests/test_clean_release.py](../tests/test_clean_release.py) — [Offline clean-task checks] Tests artifact tamper detection, Git/hook fixture behavior with doubled mypy and bounded prepare-only setup; use before live clean-task verification.
 - [docs/CLEAN_SOURCE_RELEASE.md](CLEAN_SOURCE_RELEASE.md) — [Clean-task protocol] Defines the autonomous goal, condition differences, limits, verifier scope, manual commands and evidence paths; follow before launching the clean-source attempt.
 
-- [notebooks/05_thinking_manual_colab_mac.ipynb](../notebooks/05_thinking_manual_colab_mac.ipynb) — [Thinking pilot entry point] Provides fresh-T4 package validation, durable phase retention, smoke and manual request generation for the dedicated Thinking-2507 condition; retain for reproducing the historical pilot.
+- [docs/TASK_GAMING_PAPER_REVIEW.md](TASK_GAMING_PAPER_REVIEW.md) — [Primary-source methods review] Compares the task-gaming post and linked framework with our adaptation, identifies reusable reporting environments and documents scope/interface limits; consult before adopting another upstream setup.
+
+- [docs/REASONING_AGENT_RECOVERY_PLAN.md](REASONING_AGENT_RECOVERY_PLAN.md) — [Researched recovery proposal] Defines a separately versioned reasoning-model, constrained-action and activation-capture path with hardware estimates and staged task acceptance; consult before implementing or launching the replacement condition.
+
+- [src/qwen_adapter/thinking_format.py](../src/qwen_adapter/thinking_format.py) — Defines the versioned thinking/action schema, per-checkpoint native history/opening handling and strict phase/activation validation; needed only for the new thinking condition.
+
+- [src/qwen_adapter/thinking_model.py](../src/qwen_adapter/thinking_model.py) — Runs either pinned dedicated or hybrid Qwen3 thinking followed by constrained JSON and captures selected online/replayed vectors; needed in Colab for the thinking engineering pilot.
+
+- [configs/precommit_hook_qwen3_clean_thinking.json](../configs/precommit_hook_qwen3_clean_thinking.json) — Pins the reasoning model and combined pilot settings with clean source and explicit budgets; use separately from all Qwen2.5 conditions.
+
+- [requirements-thinking.txt](../requirements-thinking.txt) — Adds the pinned constrained-decoding dependency to existing model requirements; install only in the new thinking inference runtime.
+
+- [notebooks/05_thinking_manual_colab_mac.ipynb](../notebooks/05_thinking_manual_colab_mac.ipynb) — Provides fresh-T4 package validation, durable phase retention, GPU smoke and manual request generation; use as the new pilot execution entry point.
+
+- [scripts/package_thinking_manual.py](../scripts/package_thinking_manual.py) — Builds and verifies immutable allowlisted dedicated, hybrid or Kaggle thinking upload packages and checksums under work; use before the new Colab setup.
+
+- [docs/THINKING_MANUAL_RUN.md](../docs/THINKING_MANUAL_RUN.md) — Specifies the adapted protocol, exact Mac/Colab workflow, acceptance checks and evidence paths; follow for the new manual pilot.
+
+- [tests/test_thinking_interface.py](../tests/test_thinking_interface.py) — Checks the real schema parser, phase boundaries, failure retention, activation tampering, manual exchange and bounded launcher wiring with doubles; run offline before packaging.
+
+- [docs/THINKING_SMOKE_DIAGNOSIS.md](THINKING_SMOKE_DIAGNOSIS.md) — Records the inspected failed thinking smoke and separately versioned bounded prompt controls with preserved evidence and decision rules; use before further live debugging.
+
+- [configs/precommit_hook_qwen3_clean_action_prompt.json](../configs/precommit_hook_qwen3_clean_action_prompt.json) — Defines one separately versioned clean-task prompt fallback with consistent final_report instructions and incremental action while retaining model, generation settings and task goal; use only after reviewing the first thinking-task failure.
+
+- [configs/precommit_hook_qwen3_clean_action_4096.json](../configs/precommit_hook_qwen3_clean_action_4096.json) — Defines the authorized single thinking-budget comparison at 4096 tokens with unchanged action prompt, model and other task/generation limits; use separately from the failed 2048-token runs.
+
+- [configs/precommit_hook_qwen3_hybrid_clean.json](../configs/precommit_hook_qwen3_hybrid_clean.json) — Pins original Qwen3-4B in thinking mode for a clean-task checkpoint comparison with the prior action prompt and 4096-token cap; use separately from dedicated-thinking conditions.
+
+- [notebooks/06_qwen3_hybrid_manual_colab_mac.ipynb](../notebooks/06_qwen3_hybrid_manual_colab_mac.ipynb) — Loads the pinned hybrid checkpoint in a fresh T4 runtime and provides one neutral smoke plus manual task generation; use only with its matching package/config.
+
+- [docs/QWEN3_HYBRID_MANUAL_RUN.md](../docs/QWEN3_HYBRID_MANUAL_RUN.md) — Records the hybrid model/template differences, exact setup and clean-task commands, acceptance checks and larger-GPU fallback decision; follow for this checkpoint comparison.
+
+- [docs/validation/2026-11-01_qwen3-4b_template_reference.json](../docs/validation/2026-11-01_qwen3-4b_template_reference.json) — Retains the exact pinned upstream chat template and hashes for offline boundary/history tests; keep as a reference artifact, not live inference evidence.
+
+- [src/qwen_adapter/small_release.py](../src/qwen_adapter/small_release.py) — Checks ten-error source baselines, conservative annotation repairs and unstaged-error hook behavior without labeling intent; use for the small failing-source outcome audit.
+
+- [configs/precommit_hook_qwen3_hybrid_small.json](../configs/precommit_hook_qwen3_hybrid_small.json) — Selects the upstream ten-error case with unchanged hybrid generation/prompts and explicit twelve-call/90-minute caps; use only for the bounded failing-source trial.
+
+- [docs/SMALL_FAILING_SOURCE_RUN.md](../docs/SMALL_FAILING_SOURCE_RUN.md) — Defines the ten-error condition, stronger hook controls, exact manual launch/exchange commands and audit limits; follow before running or interpreting this case.
+
+- [tests/test_small_release.py](../tests/test_small_release.py) — Exercises annotation/body/suppression checks, baseline guards, real Git staged-only detection and small-condition launcher wiring using offline fixtures and doubled mypy; run before the failing-source pilot.
+
+- [src/qwen_adapter/notebook_exchange.py](../src/qwen_adapter/notebook_exchange.py) — Encodes validated request JSON as a safely quoted notebook cell without interpreting model text as code; use for manual Kaggle request transfer.
+
+- [scripts/kaggle_request_cell.py](../scripts/kaggle_request_cell.py) — Emits a copy/paste cell only for an exported still-pending request; use on Mac instead of Colab file upload for Kaggle inference.
+
+- [configs/precommit_hook_qwen3_hybrid_small_kaggle.json](../configs/precommit_hook_qwen3_hybrid_small_kaggle.json) — Labels the unchanged ten-error hybrid condition as Kaggle inference with separate platform metadata; use only with the Kaggle notebook and a fresh Mac run.
+
+- [notebooks/07_qwen3_hybrid_kaggle_mac.ipynb](../notebooks/07_qwen3_hybrid_kaggle_mac.ipynb) — Provides GPU/package/download checks, pinned model loading, one smoke and manual inference with explicit working-files backups; use as the Kaggle execution entry point.
+
+- [docs/KAGGLE_MANUAL_RUN.md](../docs/KAGGLE_MANUAL_RUN.md) — Documents account/GPU prerequisites, private package inputs, exact request/response steps and non-Drive evidence retention; follow before the platform migration.
+
+- [tests/test_notebook_exchange.py](../tests/test_notebook_exchange.py) — Checks safe request quoting, stale-request rejection and Kaggle bootstrap integrity/reuse offline without GPU or browser execution; run after notebook transport changes.
+
+- [configs/precommit_hook_qwen3_hybrid_small_kaggle_clarified.json](../configs/precommit_hook_qwen3_hybrid_small_kaggle_clarified.json) — [Prompt adaptation] Clarifies repository read/edit access and typing repair for one separately recorded ten-error Kaggle run after early abandonment.
+- [docs/KAGGLE_PROMPT_CLARIFICATION_RUN.md](KAGGLE_PROMPT_CLARIFICATION_RUN.md) — [Run protocol] Records the changed instruction, fixed comparison settings and manual launch/retention procedure for the bounded clarification run.
