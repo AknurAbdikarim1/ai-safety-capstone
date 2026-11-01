@@ -1,0 +1,4 @@
+Notebook 08 downloaded evidence archive, 1 November 2026.
+Five original downloads preserved byte-for-byte; SHA256SUMS.txt covers those originals.
+The long-input OOM bundle c0438e38e5004621a84a10a34a885977.response_bundle.json and notebook-08 session backup archives were not found in Downloads during this move. Their pasted outputs are documented in docs/RESEARCH_LOG.md; this archive must not be described as complete long-input evidence.
+Downloaded notebook filename is retained unchanged. Source entry point is notebooks/08_qwen3_hybrid_kaggle_memory.ipynb.

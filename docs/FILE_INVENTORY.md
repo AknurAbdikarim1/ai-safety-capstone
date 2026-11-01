@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 1 November 2026; covers **190 files**, including uncommitted project files and this inventory.
+Updated 1 November 2026; covers **193 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -283,3 +283,7 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 
 - [configs/precommit_hook_qwen3_hybrid_small_kaggle_clarified.json](../configs/precommit_hook_qwen3_hybrid_small_kaggle_clarified.json) — [Prompt adaptation] Clarifies repository read/edit access and typing repair for one separately recorded ten-error Kaggle run after early abandonment.
 - [docs/KAGGLE_PROMPT_CLARIFICATION_RUN.md](KAGGLE_PROMPT_CLARIFICATION_RUN.md) — [Run protocol] Records the changed instruction, fixed comparison settings and manual launch/retention procedure for the bounded clarification run.
+
+- [configs/precommit_hook_qwen3_hybrid_small_kaggle_memory.json](../configs/precommit_hook_qwen3_hybrid_small_kaggle_memory.json) — [Profiling condition] Labels the unchanged clarified ten-error task with stage-memory telemetry; use only after reviewing the fresh-session smoke.
+- [notebooks/08_qwen3_hybrid_kaggle_memory.ipynb](../notebooks/08_qwen3_hybrid_kaggle_memory.ipynb) — [Memory profiling entry point] Loads the separately checksummed telemetry package in a fresh Kaggle session and retains scalar stage-memory evidence.
+- [docs/KAGGLE_MEMORY_PROFILE.md](KAGGLE_MEMORY_PROFILE.md) — [Profiling protocol] Documents the confirmed OOM, excluded logits hypothesis and manual smoke/measurement gates without claiming a memory fix.
