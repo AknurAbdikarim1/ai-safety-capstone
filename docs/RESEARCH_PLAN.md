@@ -1,6 +1,16 @@
 # Research plan: behavioral categories and internal activations
 
+> **Pending review:** Retained for reference on 1 November 2026. Check this document against current code and saved evidence before relying on it. Later review should determine whether it remains useful, needs updating, or is obsolete and should be removed. This notice does not authorize deletion; use docs/RESEARCH_LOG.md for the dated experiment history.
+
 Version 1 — 22 October 2026. This is the working plan, not a record of completed experiments. Check boxes only after inspecting the corresponding evidence. Changes to scientific choices below require a documented discussion with the researcher before implementation.
+
+## Current engineering follow-up — 30 October 2026
+
+Researcher authorized preparation of a separately versioned reasoning-model/constrained-action pilot while keeping manual Colab–Mac transport. See [THINKING_MANUAL_RUN.md](THINKING_MANUAL_RUN.md) for implemented settings, selected activation positions P0/R1 and gated execution. This combined condition does not isolate one causal fix, replace original evidence, implement the original P1 probe design or authorize behavioral collection. The older diagnostic gate below is historical, not a claim that it passed.
+
+### Platform interruption — 1 November 2026
+
+After the verified hybrid clean-task success, Colab GPU quota blocked the first ten-error trial before inference. Researcher authorized a Kaggle/manual adaptation with the same model, prompts and generation settings; see [KAGGLE_MANUAL_RUN.md](KAGGLE_MANUAL_RUN.md). Runtime/hardware and storage differences define a separate platform condition. Kaggle allocation, transfer and inference remain live gates; no new collection or original P1/probe validation is implied.
 
 ## Deadline scope — 29 October 2026
 
