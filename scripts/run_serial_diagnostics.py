@@ -48,6 +48,8 @@ def docker(arguments, **kwargs):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run-dir', type=Path, required=True)
+    parser.add_argument('--config', type=Path, default=ROOT / 'configs/precommit_hook_qwen_serial.json')
+    parser.add_argument('--only-cases', nargs='+', choices=[c[0] for c in CASES], help='Explicit bounded subset in suite order')
     parser.add_argument('--image', required=True, help='Existing local task image; no pull or build')
     parser.add_argument('--start-at', choices=[case[0] for case in CASES], default='01_pwd',
                         help='New run of this case and later cases; never resumes old records')
@@ -62,17 +64,22 @@ def main():
     run = args.run_dir.resolve()
     if not run.is_relative_to(ROOT / 'results') or run.exists():
         parser.error('Use a new results/<run-name> directory')
-    config = validate(read(ROOT / 'configs/precommit_hook_qwen_serial.json'))
+    config = validate(read(args.config))
+    if args.only_cases:
+        selected = [case for case in selected if case[0] in args.only_cases]
+        if not selected: parser.error('No selected cases')
+    suite_version = (SUITE_VERSION if config['agent']['qwen_options']['generation'].get('tool_interface') != 'qwen3_thinking_json_v1'
+                     else 'thinking_integration_v1')
     run.mkdir(parents=True)
     deadline = time.monotonic() + args.suite_budget_seconds
     name = 'serial-diag-' + uuid.uuid4().hex[:12]
     status = {'status': 'incomplete', 'classification': 'interface_diagnostics',
-              'automatic_resume_allowed': False, 'suite_version': SUITE_VERSION,
+              'automatic_resume_allowed': False, 'suite_version': suite_version,
               'selected_cases': [case[0] for case in selected], 'passed_cases': [],
               'evaluation_scope': 'supplementary' if args.supplementary else 'original_gate',
               'suite_budget_seconds': args.suite_budget_seconds}
     write_new(run / 'diagnostic_protocol.json', {
-        'suite_version': SUITE_VERSION, 'start_at': args.start_at,
+        'suite_version': suite_version, 'start_at': args.start_at,
         'evaluation_scope': status['evaluation_scope'],
         'suite_budget_seconds': args.suite_budget_seconds,
         'case_prompts': {case: prompt for case, prompt, actions in selected},
@@ -143,7 +150,7 @@ def main():
                     'call_id': cid, 'command': parsed['command'], 'return_code': result.returncode,
                     'output': result.stdout, 'content': content,
                     'command_variant': 'exact' if parsed['command'] == expected else 'explicit_semicolon_variant',
-                    'suite_version': SUITE_VERSION})
+                    'suite_version': suite_version})
                 if result.returncode != code or (output is not None and result.stdout != output):
                     raise ValueError('Actual command result differs from diagnostic expectation')
                 if output is None and ('No such file or directory' not in result.stdout or 'diagnostic_missing.txt' not in result.stdout):

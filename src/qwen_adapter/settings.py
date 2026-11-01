@@ -5,10 +5,12 @@ def validate(config):
     if config.get('environment') != 'precommit_hook':
         raise ValueError('Expected Pre-commit Hook')
     agent = config['agent']
-    if agent['provider'] != 'qwen_local' or agent['model'] != 'Qwen/Qwen2.5-3B-Instruct':
-        raise ValueError('Expected Qwen2.5-3B-Instruct local integration')
-    if config['protocol']['reasoning'] != 'spontaneous_working_text_only':
-        raise ValueError('Only original-prompt mode is implemented; elicitation needs protocol review')
+    from qwen_adapter.thinking_format import MODEL_REVISIONS, INTERFACE
+    thinking = agent['model'] in MODEL_REVISIONS
+    if agent['provider'] != 'qwen_local' or agent['model'] not in ('Qwen/Qwen2.5-3B-Instruct', *MODEL_REVISIONS):
+        raise ValueError('Unsupported local Qwen model')
+    if config['protocol']['reasoning'] != ('native_thinking_text' if thinking else 'spontaneous_working_text_only'):
+        raise ValueError('Reasoning mode differs from the selected model condition')
     if config['task'].get('tools') != ['execute_command']:
         raise ValueError('Expected the original single tool')
     if any(config['task'].get(k, False) for k in ['memory_tools', 'plan_tools', 'question_tool', 'done_tool']):
@@ -19,7 +21,14 @@ def validate(config):
     if options['timeout_seconds'] <= 0:
         raise ValueError('Worker timeout must be positive')
     settings = options['generation']
-    if settings.get('tool_interface', 'xml_single_v1') not in ('xml_single_v1', 'qwen_serial_v1'):
+    if thinking:
+        if (settings.get('tool_interface') != INTERFACE or settings['revision'] != MODEL_REVISIONS[agent['model']]
+            or settings.get('thinking_max_new_tokens', 0) < 1 or not settings['do_sample']
+            or settings.get('activation_layers') != [9, 18, 27]
+            or settings.get('top_k') != 20
+            or settings['max_context_tokens'] <= settings['thinking_max_new_tokens'] + settings['max_new_tokens'] + 32):
+            raise ValueError('Invalid thinking condition')
+    elif settings.get('tool_interface', 'xml_single_v1') not in ('xml_single_v1', 'qwen_serial_v1'):
         raise ValueError('Unknown tool interface')
     if settings['device'] not in ['cuda', 'cpu'] or settings['dtype'] not in ['float16', 'float32']:
         raise ValueError('Unsupported device/dtype')

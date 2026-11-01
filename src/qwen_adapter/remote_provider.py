@@ -24,7 +24,9 @@ class QwenRemoteProvider(BaseProvider):
         self.pending = None
         self.last_call_id = None
         self.settings = qwen_options['generation']
-        if model != 'Qwen/Qwen2.5-3B-Instruct':
+        from qwen_adapter.thinking_format import MODEL_REVISIONS, INTERFACE
+        thinking = model in MODEL_REVISIONS and self.settings.get('tool_interface') == INTERFACE
+        if model != 'Qwen/Qwen2.5-3B-Instruct' and not thinking:
             raise ValueError('This integration is validated only for the configured Qwen model')
         if len(tools) != 1 or tools[0]['function']['name'] != 'execute_command':
             raise ValueError('Only the original single execute_command tool is supported')

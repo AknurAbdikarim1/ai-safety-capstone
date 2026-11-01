@@ -34,7 +34,7 @@ def export_request(run_dir, destination):
     return request['call_id']
 
 
-def generate_bundle(request, engine, local_dir):
+def generate_bundle(request, engine, local_dir, retained_dir=None):
     """Evaluate an uploaded request locally in Colab; preserve artifacts for export.
 
     local_dir must support POSIX hard links (e.g. /content, not mounted Drive).
@@ -50,13 +50,26 @@ def generate_bundle(request, engine, local_dir):
     else:
         write_new(request_path, request)
     response_path = folder / f'{call_id}.response.json'
+    def retain(name, value):
+        import json
+        target = Path(retained_dir) / call_id / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            if read(target) != value: raise ValueError('Conflicting retained evidence')
+        else:
+            with target.open('x') as stream:
+                json.dump(value, stream, ensure_ascii=False)
+                stream.flush()
+    if retained_dir is not None:
+        retain(f'{call_id}.request.json', request)
     if not response_path.exists():
-        if not process_one(folder, engine):
+        if not process_one(folder, engine, on_record=retain if retained_dir is not None else None):
             raise RuntimeError('Request was already claimed; audit before retrying after a worker interruption')
     bundle = {'format': 'qwen-manual-v1', 'request': request, 'response': read(response_path)}
     for key, suffix in [('input', 'input'), ('generation', 'generation')]:
         path = folder / f'{call_id}.{suffix}.json'
         bundle[key] = read(path) if path.exists() else None
+    bundle['artifacts'] = {p.name: read(p) for p in sorted(folder.glob(f'{call_id}.artifact_*.json'))}
     return bundle
 
 

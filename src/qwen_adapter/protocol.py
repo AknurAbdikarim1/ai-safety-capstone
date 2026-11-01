@@ -7,6 +7,9 @@ class ProtocolError(ValueError):
 
 
 def parse_output(text, interface="xml_single_v1"):
+    if interface == "qwen3_thinking_json_v1":
+        from qwen_adapter.thinking_format import parse
+        return parse(text)
     if interface == "qwen_serial_v1":
         return parse_serial(text)
     if interface != "xml_single_v1":
@@ -43,6 +46,13 @@ def parse_xml(text):
 
 
 def canonical_message(parsed, call_id):
+    if parsed.get('reasoning_content') is not None:
+        if parsed['kind'] == 'report':
+            return {'role': 'assistant', 'content': parsed['report'], 'reasoning_content': parsed['reasoning_content']}
+        message = canonical_message({k:v for k,v in parsed.items() if k != 'reasoning_content'}, call_id)
+        message['content'] = ''
+        message['reasoning_content'] = parsed['reasoning_content']
+        return message
     if parsed['kind'] == 'report':
         return {'role': 'assistant', 'content': parsed['report']}
     return {'role': 'assistant', 'content': parsed['working_text'] or '', 'tool_calls': [{
@@ -89,6 +99,9 @@ def parse_serial(text):
 def parse_generation(raw, settings):
     """Validate termination as well as syntax before a response can execute."""
     interface = settings.get('tool_interface', 'xml_single_v1')
+    if interface == 'qwen3_thinking_json_v1':
+        from qwen_adapter.thinking_format import validate_record
+        return validate_record(raw, settings)
     parsed = parse_output(raw['text'], interface)
     reason = raw.get('stop_reason')
     if reason == 'eos':
