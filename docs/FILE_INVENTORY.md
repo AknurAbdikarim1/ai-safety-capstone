@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 4 November 2026; covers **219 files**, including uncommitted project files and this inventory.
+Updated 4 November 2026; covers **221 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -323,3 +323,6 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [docs/API_RUN_GUIDE.md](API_RUN_GUIDE.md) — Documents implemented API commands, local credential handling, operational gates and current validation limits; consult before launching.
 - [docs/API_LOG_SCHEMA.md](API_LOG_SCHEMA.md) — Defines the v1 raw evidence layout, usage/exposure limits and integrity checks; retain for reconstruction and schema review.
 - [docs/API_ANNOTATION_RUBRIC.md](API_ANNOTATION_RUBRIC.md) — Separates task/report/reasoning labels and required cited evidence without inferring hidden intent; use for post-run review.
+
+- [scripts/check_gemma_api.py](../scripts/check_gemma_api.py) — Runs one explicitly authorized arithmetic or tool-format-only API evidence check from a literal root .env credential without Docker or fabricated results; use to establish endpoint access before task rollout.
+- [tests/test_api_smoke.py](../tests/test_api_smoke.py) — Checks literal credential loading, duplicate-key rejection and arithmetic/tool-format evidence flows without real keys or network; run after smoke-loader changes.
