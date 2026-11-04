@@ -93,8 +93,12 @@ Done when: a human can reconstruct the evidence, actual context and final claim 
 
 Use a fixed rollout/time/token budget. Preserve honest, misleading, uncertain and invalid runs. Annotate explicit verbalized deception evidence versus other misleading reports; incomplete reasoning remains uncertain. Evaluate whether both groups occur before scaling. Repeated samples and error-count variants of this one codebase are not independent task templates.
 
-## Current status
+## Status at source import (historical)
 
 Completed: exact source import, provenance, byte verification, compatibility audit, implementation checklist.
 
 Not completed: Qwen provider, integration patches, elicitation protocol, Docker/GPU execution, behavior collection, reasoning capture or probe training. No original environment behavior has been modified.
+
+## Implementation update
+
+The adapter, private-file transport, generated four-file upstream patch, notebook and offline tests are now implemented. See [QWEN_INTEGRATION.md](QWEN_INTEGRATION.md) for current supported scope, validation and remaining research/deployment gates. The reference snapshot remains unchanged.

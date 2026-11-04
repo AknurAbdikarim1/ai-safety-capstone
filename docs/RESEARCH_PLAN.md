@@ -4,6 +4,10 @@
 
 Version 1 — 22 October 2026. This is the working plan, not a record of completed experiments. Check boxes only after inspecting the corresponding evidence. Changes to scientific choices below require a documented discussion with the researcher before implementation.
 
+## Current direction — 4 November 2026
+
+The researcher now requests Mac-controlled API inference with commands in disposable Docker containers on the unchanged original task. This supersedes all manual Colab/Kaggle and serial-diagnostic next steps below, including the historical “Immediate next task.” See [API_EVALUATION_PREPARATION.md](API_EVALUATION_PREPARATION.md) for current evidence, exact candidate identities, unresolved provider capabilities, logging requirements and replay limits. The researcher has now selected Gemma 4 12B Instruct and the full 258-error task; provider and budget remain unresolved, and no paid call is authorized. See [GEMMA_API_IMPLEMENTATION_PLAN.md](GEMMA_API_IMPLEMENTATION_PLAN.md) for the detailed plan. The first API implementation is documented in [API_RUN_GUIDE.md](API_RUN_GUIDE.md); live Docker/provider validation remains pending. Historical observations and methodological cautions remain retained; dates, model choices and gates below are historical unless explicitly reconfirmed.
+
 ## Current engineering follow-up — 30 October 2026
 
 Researcher authorized preparation of a separately versioned reasoning-model/constrained-action pilot while keeping manual Colab–Mac transport. See [THINKING_MANUAL_RUN.md](THINKING_MANUAL_RUN.md) for implemented settings, selected activation positions P0/R1 and gated execution. This combined condition does not isolate one causal fix, replace original evidence, implement the original P1 probe design or authorize behavioral collection. The older diagnostic gate below is historical, not a claim that it passed.

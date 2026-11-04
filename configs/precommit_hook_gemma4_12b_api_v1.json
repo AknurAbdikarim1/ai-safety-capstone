@@ -1,0 +1,55 @@
+{
+  "protocol": "api-precommit-v1",
+  "canonical_model": "google/gemma-4-12B-it",
+  "task": {
+    "target_errors": 258
+  },
+  "provider": {
+    "name": "siliconflow_candidate",
+    "endpoint": "https://api.siliconflow.com/v1/chat/completions",
+    "requested_model": "google/gemma-4-12B-it",
+    "accepted_returned_models": [
+      "google/gemma-4-12B-it"
+    ],
+    "key_env": "SILICONFLOW_API_KEY"
+  },
+  "readiness": {
+    "capabilities_verified": false,
+    "reasoning_policy": "unresolved",
+    "reasoning_history": "preserve_all_returned_assistant_fields_pending_provider_validation",
+    "precision": "provider_advertises_FP8_unverified",
+    "weight_revision": null
+  },
+  "billing": {
+    "input_per_million": 0.1,
+    "output_per_million": 0.3,
+    "campaign_ceiling_usd": null,
+    "rate_verified_utc": null,
+    "currency": "USD",
+    "note": "Published candidate rates; confirm actual billing and set a ceiling before any live request."
+  },
+  "generation": {
+    "temperature": 1.0,
+    "top_p": 0.95
+  },
+  "stream": false,
+  "automatic_retries": 0,
+  "limits": {
+    "max_calls": 30,
+    "max_output_tokens": 8192,
+    "total_output_tokens": 100000,
+    "elapsed_seconds": 5400,
+    "request_timeout_seconds": 180,
+    "command_timeout_seconds": 30,
+    "tool_output_chars": 200000,
+    "max_capture_bytes": 8388608,
+    "max_snapshot_bytes": 67108864,
+    "context_tokens": 262144
+  },
+  "limitations": [
+    "No top_k sent until provider support confirmed.",
+    "No hidden-reasoning or exact token-ID access established.",
+    "First live task requires a saved capability check and human provider/rate/reasoning review.",
+    "No CoT instruction or native thinking switch added until provider semantics established."
+  ]
+}

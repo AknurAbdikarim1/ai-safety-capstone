@@ -62,4 +62,37 @@ Model loading follows the [official Qwen model card](https://huggingface.co/Qwen
 
 ## Original Pre-commit Hook source
 
-The exact upstream task and supporting framework files are preserved under `experiment_sources/agent-interp-envs/`. See [the adaptation checklist](docs/PRECOMMIT_ADAPTATION.md) and `experiment_sources/UPSTREAM_MANIFEST.json` for the pinned source and checksums. Run `python scripts/verify_upstream.py` to verify source integrity. The Qwen environment integration is not implemented yet.
+The exact upstream task and supporting framework files are preserved under `experiment_sources/agent-interp-envs/`. See [the adaptation checklist](docs/PRECOMMIT_ADAPTATION.md) and `experiment_sources/UPSTREAM_MANIFEST.json` for pinned checksums. Run `python3 scripts/verify_upstream.py` to verify source integrity. Adaptations patch generated copies beneath ignored `work/`; originals remain unchanged.
+
+## Current API workflow
+
+The Mac-controlled API runner is `scripts/run_precommit_api.py`, implemented in `src/api_eval/`. The initial candidate is Gemma 4 12B Instruct on the original 258-error task. Configuration is `configs/precommit_hook_gemma4_12b_api_v1.json`; provider capabilities, reasoning scope and spending limits must be resolved before live calls. No GPU or model weights are required on the Mac. Python 3.10+ and Docker Desktop are required for container runs.
+
+Start without a key or Docker:
+
+```sh
+python3 scripts/run_precommit_api.py --prepare-only --run-dir results/gemma4_api_prepare_001
+python3 scripts/inspect_api_run.py results/gemma4_api_prepare_001
+```
+
+After starting Docker Desktop, run the no-API container/checker gate:
+
+```sh
+python3 scripts/run_precommit_api.py --preflight --run-dir results/gemma4_api_preflight_001
+```
+
+Every run directory must be new. Runtime evidence stays under ignored `results/` and requires a separate backup. A prepared or normally terminated run is not automatically a successful task. The new image/checker and provider exchanges still require live validation; see [the research log](docs/RESEARCH_LOG.md) for actual checks and limitations.
+
+Keep the API key in the repository-root `.env` as `SILICONFLOW_API_KEY=your_actual_key`, never in tracked config or chat. `.env` is ignored. Restrict it and load the named variable in your local shell before an authorized live run:
+
+```sh
+chmod 600 .env
+source .env
+export SILICONFLOW_API_KEY
+```
+
+Only source your own trusted local file. The runner reads this environment variable and does not auto-load `.env`; the key is never forwarded into the task container. Paid calls require explicit `--allow-paid-api`, resolved billing and a shared campaign ledger. A full task also requires capability review and resolved reasoning policy; do not set readiness true merely to bypass these checks.
+
+## Historical Qwen workflow
+
+[QWEN_INTEGRATION.md](docs/QWEN_INTEGRATION.md) and [MANUAL_COLAB_MAC.md](docs/MANUAL_COLAB_MAC.md) document the older notebook/container and manual-transfer setup. Saved evidence includes an audited clean-source release and incomplete ten-error attempts, including a later GPU OOM. These runs do not establish full-258-error competence, a qualifying deception dataset or trained probes. The API workflow supersedes manual-transfer next steps; preserve old code/evidence for provenance.

@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 1 November 2026; covers **193 files**, including uncommitted project files and this inventory.
+Updated 4 November 2026; covers **219 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -287,3 +287,39 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [configs/precommit_hook_qwen3_hybrid_small_kaggle_memory.json](../configs/precommit_hook_qwen3_hybrid_small_kaggle_memory.json) — [Profiling condition] Labels the unchanged clarified ten-error task with stage-memory telemetry; use only after reviewing the fresh-session smoke.
 - [notebooks/08_qwen3_hybrid_kaggle_memory.ipynb](../notebooks/08_qwen3_hybrid_kaggle_memory.ipynb) — [Memory profiling entry point] Loads the separately checksummed telemetry package in a fresh Kaggle session and retains scalar stage-memory evidence.
 - [docs/KAGGLE_MEMORY_PROFILE.md](KAGGLE_MEMORY_PROFILE.md) — [Profiling protocol] Documents the confirmed OOM, excluded logits hypothesis and manual smoke/measurement gates without claiming a memory fix.
+
+## Professor meeting preparation — 4 November 2026
+
+- [docs/PROFESSOR_MEETING_2026-11-04.md](PROFESSOR_MEETING_2026-11-04.md) — Meeting brief with four evidence rows, verified source links, a proposed API pilot and manual/automated workflow; use for the November professor discussion.
+- [docs/CITATION_REVIEW_2026-11-04.md](CITATION_REVIEW_2026-11-04.md) — Primary-source metadata corrections for the proposal/report references, including the malformed workspace author list; use when updating the bibliography.
+- [docs/validation/2026-11-04_clean_source_transcript.md](../docs/validation/2026-11-04_clean_source_transcript.md) — Verbatim generated reasoning/actions and actual Docker results from the audited clean release, with provenance; retain as meeting evidence.
+- [docs/validation/2026-11-04_ten_error_transcript.md](../docs/validation/2026-11-04_ten_error_transcript.md) — Verbatim generated reasoning/actions and actual Docker results from the acknowledged ten-error failure; retain without repairing model mistakes.
+- [docs/validation/2026-11-04_meeting_evidence.json](../docs/validation/2026-11-04_meeting_evidence.json) — Machine-readable extraction of task outcomes, source checksums and PDF-correction checks; retain for meeting-claim verification.
+- [docs/validation/2026-11-04_reproduction_references_corrected.pdf](../docs/validation/2026-11-04_reproduction_references_corrected.pdf) — Copy of the submitted report with reference page 6 replaced using verified metadata; retain alongside citation-review notes without treating the report body as newly validated.
+
+## API evaluation preparation — 4 November 2026
+
+- [docs/API_EVALUATION_PREPARATION.md](API_EVALUATION_PREPARATION.md) — Current evidence audit, primary-source model/provider verification and proposed host API/Docker logging and replay contract; use before implementing or authorizing the new evaluation workflow.
+
+- [docs/GEMMA_API_IMPLEMENTATION_PLAN.md](GEMMA_API_IMPLEMENTATION_PLAN.md) — Detailed Gemma/full-258-error implementation sequence, provider/key investigation, cost scenarios, evidence schema and repository layout; review before implementing or authorizing live API trials.
+
+## API implementation — 4 November 2026
+
+- [src/api_eval/__init__.py](../src/api_eval/__init__.py) — Marks the separate host API evaluation package; retain with the new runner.
+- [src/api_eval/records.py](../src/api_eval/records.py) — Validates frozen conditions and native tool envelopes without repairing commands; use before dispatching API actions.
+- [src/api_eval/evidence.py](../src/api_eval/evidence.py) — Publishes exclusive durable run records and final hashes; use for interrupted and completed API evidence.
+- [src/api_eval/provider.py](../src/api_eval/provider.py) — Captures exact credential-free HTTP bodies/chunks and safe metadata without retries; use for the candidate API endpoint.
+- [src/api_eval/campaign.py](../src/api_eval/campaign.py) — Locks and persists cross-run estimated spend reservations including unknown charges; retain with API budget control.
+- [src/api_eval/container_rpc.py](../src/api_eval/container_rpc.py) — Executes task shells as dev and exposes trusted bounded inventory/control operations inside Docker; needed by generated API images.
+- [src/api_eval/docker_task.py](../src/api_eval/docker_task.py) — Controls setup-only task containers with argv/stdin RPC, workspace snapshots and cleanup; use from the Mac controller.
+- [src/api_eval/runner.py](../src/api_eval/runner.py) — Runs bounded native action/result exchanges preserving assistant continuation fields and actual observations; use for API rollouts.
+- [src/api_eval/verify_precommit.py](../src/api_eval/verify_precommit.py) — Orchestrates protected full-258-source baseline and submitted-hook checks with explicit human-review limits; validate live before task claims.
+- [src/api_eval/validate_run.py](../src/api_eval/validate_run.py) — Checks run hashes, event order and saved result/history consistency; use when inspecting or backing up API evidence.
+- [scripts/prepare_api_environment.py](../scripts/prepare_api_environment.py) — Generates a setup-only API Docker copy and provenance patch from unchanged upstream sources; use before image builds.
+- [scripts/run_precommit_api.py](../scripts/run_precommit_api.py) — Provides prepare-only, Docker preflight, explicit capability and task launch modes with live-call gates; use for new Gemma runs.
+- [scripts/inspect_api_run.py](../scripts/inspect_api_run.py) — Reports API evidence integrity and incomplete-JSON problems offline without resuming any command or inference; use after preparation or runs.
+- [configs/precommit_hook_gemma4_12b_api_v1.json](../configs/precommit_hook_gemma4_12b_api_v1.json) — Defines the candidate Gemma/full-258 API condition with unresolved billing/readiness gates; resolve only after provider review.
+- [tests/test_api_eval.py](../tests/test_api_eval.py) — Tests raw capture, strict protocol, failure retention, budget reservations and preparation without live APIs or Docker; run after API changes.
+- [docs/API_RUN_GUIDE.md](API_RUN_GUIDE.md) — Documents implemented API commands, local credential handling, operational gates and current validation limits; consult before launching.
+- [docs/API_LOG_SCHEMA.md](API_LOG_SCHEMA.md) — Defines the v1 raw evidence layout, usage/exposure limits and integrity checks; retain for reconstruction and schema review.
+- [docs/API_ANNOTATION_RUBRIC.md](API_ANNOTATION_RUBRIC.md) — Separates task/report/reasoning labels and required cited evidence without inferring hidden intent; use for post-run review.
