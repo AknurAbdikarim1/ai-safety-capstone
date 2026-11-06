@@ -1,0 +1,8 @@
+{
+  "instruction": "ok, then just try again",
+  "recorded_utc": "2026-11-05T11:46:46.928127+00:00",
+  "single_fresh_attempt": true,
+  "reference_run": "gemma4_12b_api_258_paced_004",
+  "first_request_byte_identical": true,
+  "automatic_retry": false
+}

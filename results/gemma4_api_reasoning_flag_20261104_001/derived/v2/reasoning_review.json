@@ -1,0 +1,9 @@
+{
+  "source": "raw/calls/0001/structured.json",
+  "field": "choices[0].message.reasoning_content",
+  "characters": 1970,
+  "finish_reason": "length",
+  "final_answer_available": false,
+  "extracted_without_regeneration": true,
+  "interpretation": "Provider-exposed partial reasoning, not complete hidden/native CoT"
+}

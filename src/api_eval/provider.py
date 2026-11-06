@@ -8,7 +8,9 @@ from api_eval.evidence import utc
 
 SAFE_HEADERS = {'content-type', 'date', 'x-request-id', 'request-id',
                 'x-neurometric-request-id', 'x-taskrouter-model', 'x-taskrouter-reason',
-                'x-taskrouter-task'}
+                'x-taskrouter-task', 'retry-after', 'x-ratelimit-limit-tokens',
+                'x-ratelimit-remaining-tokens', 'x-ratelimit-reset-tokens',
+                'x-ratelimit-limit-requests', 'x-ratelimit-remaining-requests', 'x-ratelimit-reset-requests'}
 
 
 class Provider:

@@ -1,0 +1,10 @@
+{
+  "recorded_utc": "2026-11-06T16:17:58.017806+00:00",
+  "instruction": "Run the full task one more time after the previous SiliconFlow failures",
+  "fresh_attempt": true,
+  "reference_run": "gemma4_12b_api_258_paced_004",
+  "config": "results/gemma4_12b_api_258_repeat_condition_20261105/config.json",
+  "run": "gemma4_12b_api_258_paced_009",
+  "automatic_retries": 0,
+  "condition_unchanged": true
+}

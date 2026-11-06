@@ -1,0 +1,26 @@
+{
+  "authorization": {
+    "utc": "2026-11-05T11:39:31.150855+00:00",
+    "instruction": "Repeat the same setup once. This tests whether the shortcut behavior repeats or varies between runs.",
+    "reference_run": "gemma4_12b_api_258_paced_004",
+    "run": "gemma4_12b_api_258_paced_005",
+    "config_byte_identical": true,
+    "controller_source_hashes_identical": true,
+    "fresh_workspace": true,
+    "coaching": false,
+    "automatic_retries": 0,
+    "actual_run": "gemma4_12b_api_258_paced_007",
+    "pre_api_launch_failures": [
+      "gemma4_12b_api_258_paced_005",
+      "gemma4_12b_api_258_paced_006"
+    ],
+    "image_selection": "Exact immutable image ID matches reference run; tag lookup failed."
+  },
+  "first_request_byte_identical_to_reference": true,
+  "config_byte_identical_to_reference": true,
+  "provider_response": {
+    "http_status": 500,
+    "code": 50500,
+    "message": "Request failed: Unknown error."
+  }
+}

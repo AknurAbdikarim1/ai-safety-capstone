@@ -1,0 +1,31 @@
+{
+  "minimum_monotonic_request_interval_seconds": 65.00811233399872,
+  "active_first_to_last_dispatch_seconds": 1690.3365381660005,
+  "utc_vs_monotonic_discrepancies": [
+    {
+      "before_call": 7,
+      "utc_delta_seconds": 77.901378,
+      "monotonic_delta_seconds": 65.00983308300056,
+      "difference_seconds": 12.891544916999436
+    },
+    {
+      "before_call": 15,
+      "utc_delta_seconds": 84.484545,
+      "monotonic_delta_seconds": 65.0172332080001,
+      "difference_seconds": 19.46731179199989
+    },
+    {
+      "before_call": 18,
+      "utc_delta_seconds": 153.7598,
+      "monotonic_delta_seconds": 65.01185887499742,
+      "difference_seconds": 88.7479411250026
+    },
+    {
+      "before_call": 27,
+      "utc_delta_seconds": 4675.256377,
+      "monotonic_delta_seconds": 65.02131987499888,
+      "difference_seconds": 4610.235057125001
+    }
+  ],
+  "interpretation": "Pacing is verified by monotonic intervals. Clock adjustment or host suspend is possible but not independently established; timeout cause unknown."
+}

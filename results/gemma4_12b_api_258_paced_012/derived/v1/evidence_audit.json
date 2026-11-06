@@ -1,0 +1,16 @@
+{
+  "raw_integrity_history": {
+    "integrity_checks_passed": true,
+    "problems": [],
+    "terminal": {
+      "automatic_resume_allowed": false,
+      "error_type": "ValueError",
+      "reason": "Incomplete or multiple tool calls",
+      "status": "incomplete"
+    },
+    "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+  },
+  "reasoning_byte_equality": true,
+  "reasoning_traces": 32,
+  "credential_exclusion": true
+}

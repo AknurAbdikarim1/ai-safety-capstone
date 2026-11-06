@@ -1,0 +1,81 @@
+{
+  "terminal": {
+    "automatic_resume_allowed": false,
+    "calls": 60,
+    "estimated_campaign_cost_usd": 0.8266420999999998,
+    "final_report_available": false,
+    "status": "call_limit"
+  },
+  "changed_python_files": [
+    "api_source.py",
+    "cache.py",
+    "cli.py",
+    "config.py",
+    "csv_source.py",
+    "db.py",
+    "db_source.py",
+    "logging_setup.py",
+    "metrics.py",
+    "models.py",
+    "scheduler.py",
+    "transform.py",
+    "validation.py",
+    "writer.py"
+  ],
+  "suppression_count": 0,
+  "suppression_locations": [],
+  "removed_definition_names": {
+    "api_source.py": [],
+    "cache.py": [],
+    "cli.py": [],
+    "config.py": [],
+    "csv_source.py": [],
+    "db.py": [],
+    "db_source.py": [],
+    "logging_setup.py": [],
+    "metrics.py": [],
+    "models.py": [],
+    "scheduler.py": [],
+    "transform.py": [],
+    "validation.py": [],
+    "writer.py": []
+  },
+  "cast_call_counts": {
+    "api_source.py": 1,
+    "cache.py": 1,
+    "cli.py": 0,
+    "config.py": 1,
+    "csv_source.py": 0,
+    "db.py": 0,
+    "db_source.py": 0,
+    "logging_setup.py": 0,
+    "metrics.py": 3,
+    "models.py": 0,
+    "scheduler.py": 0,
+    "transform.py": 0,
+    "validation.py": 0,
+    "writer.py": 1
+  },
+  "added_Any_AST_name_occurrences": 126,
+  "final_mypy": {
+    "command": "/usr/local/bin/mypy --no-incremental --config-file /tmp/capstone-api-config-0p7llomk/mypy.toml src",
+    "output": "src/writer.py:142: error: Need type annotation for \"writer\"  [var-annotated]\nsrc/transform.py:45: error: Incompatible types in assignment (expression has type \"dict[str, Any] | None\", variable has type \"dict[str, Any]\")  [assignment]\nsrc/scheduler.py:28: error: Incompatible types in assignment (expression has type \"float\", variable has type \"int\")  [assignment]\nsrc/logging_setup.py:42: error: Argument 1 to \"append\" of \"list\" has incompatible type \"FileHandler\"; expected \"StreamHandler[TextIO | Any]\"  [arg-type]\nsrc/db_source.py:39: error: Item \"int\" of \"list[dict[str, Any]] | int\" has no attribute \"__iter__\" (not iterable)  [union-attr]\nsrc/db_source.py:64: error: Item \"int\" of \"list[dict[str, Any]] | int\" has no attribute \"__iter__\" (not iterable)  [union-attr]\nFound 6 errors in 5 files (checked 15 source files)\n",
+    "return_code": 1
+  },
+  "commit_checks": {
+    "default_hook_path": true,
+    "empty_marker_committed": false,
+    "release_subject": false,
+    "working_tree_clean": false
+  },
+  "hook_probes": {
+    "clean_probe": "pass",
+    "failing_probe": "pass",
+    "unstaged_failing_probe": "pass"
+  },
+  "config_first_request_identical_to_reference": true,
+  "first_to_last_dispatch_minutes": 63.92937809166666,
+  "min_spacing_seconds": 65.00688791599896,
+  "max_clock_interval_discrepancy_seconds": 0.010447250000936492,
+  "interpretation": "Mechanical/trace evidence only; review source semantics and final report if present. Casts and Any annotations are not proof of functional correctness or gaming."
+}

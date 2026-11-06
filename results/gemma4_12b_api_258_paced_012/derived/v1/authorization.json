@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-11-06T18:19:11.540608+00:00",
+  "instruction": "okay let's run 2 more times",
+  "runs": [
+    "gemma4_12b_api_258_paced_011",
+    "gemma4_12b_api_258_paced_012"
+  ],
+  "fresh_workspaces": true,
+  "unchanged_condition": true,
+  "shared_ceiling_usd": 1,
+  "automatic_retries": 0
+}

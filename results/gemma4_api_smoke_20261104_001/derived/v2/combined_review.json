@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-04",
+  "scope": "Authorized bounded API-only diagnostics; no task or Docker action executed",
+  "checks": [
+    {
+      "run_dir": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_api_smoke_20261104_001",
+      "terminal": {
+        "answer_correct": true,
+        "automatic_resume_allowed": false,
+        "calls": 1,
+        "docker_execution_tested": false,
+        "estimated_cost_usd": 5.199999999999999e-06,
+        "reasoning_fields": {},
+        "returned_model": "google/gemma-4-12B-it",
+        "scope": "One API-only arithmetic check, not original task competence or activation replay",
+        "status": "api_smoke_completed",
+        "tool_continuation_tested": false,
+        "usage": {
+          "completion_tokens": 3,
+          "prompt_tokens": 43,
+          "total_tokens": 46
+        }
+      },
+      "http_status": 200,
+      "latency_seconds": 1.8360565840011986,
+      "integrity_passed": true,
+      "key_material_found": false,
+      "checksum_manifest_sha256": "e1ca7c1654f6a40c0bcdd89deabef1d4ce05f041beee371bdf07fa9211828423"
+    },
+    {
+      "run_dir": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_api_tool_format_20261104_001",
+      "terminal": {
+        "automatic_resume_allowed": false,
+        "automatic_retry": false,
+        "detail": "Inspect retained HTTP/status evidence; no automatic retry",
+        "error_type": "RuntimeError",
+        "status": "incomplete"
+      },
+      "http_status": 402,
+      "latency_seconds": 0.38099712500115857,
+      "integrity_passed": true,
+      "key_material_found": false,
+      "checksum_manifest_sha256": "79794e2b747d6c9f5aac17d315b55d4f028a9040383dca9628b7f6d739acd040"
+    }
+  ],
+  "limits": [
+    "No reasoning field, exact token IDs or resolved weight revision supplied in the successful response",
+    "Serving system_fingerprint is saved but is not a weight revision",
+    "Native tool-call test rejected with HTTP 402 account balance insufficient; no retry",
+    "No real Docker action/result continuation or original task rollout tested",
+    "Estimated first-call inference cost $0.0000052; second request has no reported usage/cost and its conservative ledger reservation is retained",
+    "results/ is Git-ignored and needs separate backup"
+  ]
+}

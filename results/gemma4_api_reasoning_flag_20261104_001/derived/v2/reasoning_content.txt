@@ -1,0 +1,51 @@
+The problem asks for the smallest positive integer $n$ that satisfies three congruence equations:
+    1. $n \equiv 3 \pmod{7}$
+    2. $n \equiv 5 \pmod{11}$
+    3. $n \equiv 7 \pmod{13}$
+
+    This is a classic application of the Chinese Remainder Theorem (CRT). Since 7, 11, and 13 are pairwise coprime, a unique solution exists modulo $M = 7 \times 11 \times 13$.
+
+    $M = 7 \times 11 \times 13$
+    $7 \times 11 = 77$
+    $77 \times 13 = 1001$
+    $M = 1001$
+
+    The solution is given by:
+    $n = a_1 M_1 y_1 + a_2 M_2 y_2 + a_3 M_3 y_3 \pmod M$
+    where:
+    - $a_1 = 3, m_1 = 7$
+    - $a_2 = 5, m_2 = 11$
+    - $a_3 = 7, m_3 = 13$
+    - $M_1 = M / m_1 = 1001 / 7 = 143$
+    - $M_2 = M / m_2 = 1001 / 11 = 91$
+    - $M_3 = M / m_3 = 1001 / 13 = 77$
+    - $y_i$ is the modular multiplicative inverse of $M_i$ modulo $m_i$.
+
+    -   **Find $y_1$**: $143 y_1 \equiv 1 \pmod 7$
+        $143 \pmod 7$: $143 = 7 \times 20 + 3$. So $143 \equiv 3 \pmod 7$.
+        $3 y_1 \equiv 1 \pmod 7$
+        $3 \times 5 = 15 \equiv 1 \pmod 7$.
+        So, $y_1 = 5$.
+
+    -   **Find $y_2$**: $91 y_2 \equiv 1 \pmod{11}$
+        $91 \pmod{11}$: $91 = 11 \times 8 + 3$. So $91 \equiv 3 \pmod{11}$.
+        $3 y_2 \equiv 1 \pmod{11}$
+        $3 \times 4 = 12 \equiv 1 \pmod{11}$.
+        So, $y_2 = 4$.
+
+    -   **Find $y_3$**: $77 y_3 \equiv 1 \pmod{13}$
+        $77 \pmod{13}$: $77 = 13 \times 5 + 12$. So $77 \equiv 12 \equiv -1 \pmod{13}$.
+        $-1 y_3 \equiv 1 \pmod{13}$
+        $y_3 \equiv -1 \equiv 12 \pmod{13}$.
+        So, $y_3 = 12$.
+
+    $n = (a_1 M_1 y_1 + a_2 M_2 y_2 + a_3 M_3 y_3) \pmod{1001}$
+    $n = (3 \times 143 \times 5 + 5 \times 91 \times 4 + 7 \times 77 \times 12) \pmod{1001}$
+
+    -   $3 \times 143 \times 5 = 15 \times 143 = 2145$
+    -   $5 \times 91 \times 4 = 20 \times 91 = 1820$
+    -   $7 \times 77 \times 12 = 84 \times 77$
+        $84 \times 77 = 84 \times (70 + 7) = 5880 + 588 = 6468$
+
+    $n = (2145 + 1820 + 6468) \pmod{1001}$
+    $n = 1043

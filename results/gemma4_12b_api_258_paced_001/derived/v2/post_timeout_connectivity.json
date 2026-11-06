@@ -1,0 +1,6 @@
+{
+  "scope": "Unauthenticated connectivity check only; no inference, no API key sent",
+  "status": 401,
+  "latency_seconds": 0.3951639169972623,
+  "body": "{\"code\":30014,\"data\":null,\"message\":\"Token is invalid.\"}"
+}

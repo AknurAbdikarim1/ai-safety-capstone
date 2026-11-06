@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-04",
+  "scope": "Post-top-up reasoning exposure diagnostics; no Docker or full-task execution",
+  "runs": [
+    {
+      "directory": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_api_reasoning_flag_20261104_001",
+      "model": "google/gemma-4-12B-it",
+      "http_status": 200,
+      "completion_id": "chatcmpl-a7e66487de624bc7",
+      "finish_reason": "length",
+      "answer": "",
+      "reasoning_characters": 1970,
+      "reasoning_field": "reasoning_content",
+      "usage": {
+        "completion_tokens": 1024,
+        "prompt_tokens": 67,
+        "total_tokens": 1091
+      },
+      "estimated_cost_usd": 0.0003139,
+      "latency_seconds": 6.221543584000756
+    },
+    {
+      "directory": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_api_reasoning_short_20261104_001",
+      "model": "google/gemma-4-12B-it",
+      "http_status": 200,
+      "completion_id": "chatcmpl-866e58b2a281983c",
+      "finish_reason": "stop",
+      "answer": "50",
+      "reasoning_characters": 871,
+      "reasoning_field": "reasoning_content",
+      "usage": {
+        "completion_tokens": 402,
+        "prompt_tokens": 50,
+        "total_tokens": 452
+      },
+      "estimated_cost_usd": 0.0001256,
+      "latency_seconds": 3.225298749999638
+    }
+  ],
+  "estimated_total_cost_usd": 0.0004395,
+  "limits": [
+    "Provider-exposed reasoning text, not privileged intent or verified complete native CoT",
+    "No exact token IDs/logprobs or separate reasoning-token count supplied",
+    "No resolved weight revision; serving fingerprint retained separately",
+    "The first trace is truncated; thinking_budget=512 was requested but was not an observed hard bound",
+    "No conclusion about causal effect of thinking flag without a matched control",
+    "No Docker/tool continuation/full-258-error task or task-gaming assessment"
+  ]
+}

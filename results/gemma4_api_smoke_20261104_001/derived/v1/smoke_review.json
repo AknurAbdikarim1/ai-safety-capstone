@@ -1,0 +1,42 @@
+{
+  "terminal": {
+    "status": "api_smoke_completed",
+    "answer_correct": true,
+    "calls": 1,
+    "returned_model": "google/gemma-4-12B-it",
+    "usage": {
+      "prompt_tokens": 43,
+      "completion_tokens": 3,
+      "total_tokens": 46
+    },
+    "estimated_cost_usd": 5.199999999999999e-06,
+    "reasoning_fields": {},
+    "docker_execution_tested": false,
+    "tool_continuation_tested": false,
+    "scope": "One API-only arithmetic check, not original task competence or activation replay",
+    "automatic_resume_allowed": false
+  },
+  "evidence_validation": {
+    "integrity_checks_passed": true,
+    "problems": [],
+    "terminal": {
+      "answer_correct": true,
+      "automatic_resume_allowed": false,
+      "calls": 1,
+      "docker_execution_tested": false,
+      "estimated_cost_usd": 5.199999999999999e-06,
+      "reasoning_fields": {},
+      "returned_model": "google/gemma-4-12B-it",
+      "scope": "One API-only arithmetic check, not original task competence or activation replay",
+      "status": "api_smoke_completed",
+      "tool_continuation_tested": false,
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 43,
+        "total_tokens": 46
+      }
+    },
+    "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+  },
+  "credential_material_detected_in_evidence": false
+}

@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 4 November 2026; covers **221 files**, including uncommitted project files and this inventory.
+Updated 6 November 2026; covers **223 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -8,7 +8,7 @@ Scope: all Git-tracked and unignored project files; excludes Git internals, igno
 
 Labels describe usage, not deletion permission: alternative upstream providers may be imported indirectly, and the complete reference snapshot should stay intact for checksum verification.
 
-Runtime JSON/token bundles belong in persistent experiment storage and are traced by call IDs in the research log, rather than enumerated as source files here.
+Runtime JSON/token bundles are traced by the research log and model report rather than enumerated as source files here; the explicitly requested Gemma evidence ZIP and readable exports are retained in Git but remain generated artifacts outside this inventory’s count.
 
 ## Project setup
 
@@ -307,12 +307,12 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 
 - [src/api_eval/__init__.py](../src/api_eval/__init__.py) — Marks the separate host API evaluation package; retain with the new runner.
 - [src/api_eval/records.py](../src/api_eval/records.py) — Validates frozen conditions and native tool envelopes without repairing commands; use before dispatching API actions.
-- [src/api_eval/evidence.py](../src/api_eval/evidence.py) — Publishes exclusive durable run records and final hashes; use for interrupted and completed API evidence.
+- [src/api_eval/evidence.py](../src/api_eval/evidence.py) — Publishes exclusive durable run records, exposed reasoning artifacts and final hashes; use for interrupted and completed API evidence.
 - [src/api_eval/provider.py](../src/api_eval/provider.py) — Captures exact credential-free HTTP bodies/chunks and safe metadata without retries; use for the candidate API endpoint.
 - [src/api_eval/campaign.py](../src/api_eval/campaign.py) — Locks and persists cross-run estimated spend reservations including unknown charges; retain with API budget control.
 - [src/api_eval/container_rpc.py](../src/api_eval/container_rpc.py) — Executes task shells as dev and exposes trusted bounded inventory/control operations inside Docker; needed by generated API images.
 - [src/api_eval/docker_task.py](../src/api_eval/docker_task.py) — Controls setup-only task containers with argv/stdin RPC, workspace snapshots and cleanup; use from the Mac controller.
-- [src/api_eval/runner.py](../src/api_eval/runner.py) — Runs bounded native action/result exchanges preserving assistant continuation fields and actual observations; use for API rollouts.
+- [src/api_eval/runner.py](../src/api_eval/runner.py) — Runs bounded native action/result exchanges with conservative context accounting and optional request pacing, preserving assistant continuation fields and actual observations; use for API rollouts.
 - [src/api_eval/verify_precommit.py](../src/api_eval/verify_precommit.py) — Orchestrates protected full-258-source baseline and submitted-hook checks with explicit human-review limits; validate live before task claims.
 - [src/api_eval/validate_run.py](../src/api_eval/validate_run.py) — Checks run hashes, event order and saved result/history consistency; use when inspecting or backing up API evidence.
 - [scripts/prepare_api_environment.py](../scripts/prepare_api_environment.py) — Generates a setup-only API Docker copy and provenance patch from unchanged upstream sources; use before image builds.
@@ -324,5 +324,9 @@ Runtime JSON/token bundles belong in persistent experiment storage and are trace
 - [docs/API_LOG_SCHEMA.md](API_LOG_SCHEMA.md) — Defines the v1 raw evidence layout, usage/exposure limits and integrity checks; retain for reconstruction and schema review.
 - [docs/API_ANNOTATION_RUBRIC.md](API_ANNOTATION_RUBRIC.md) — Separates task/report/reasoning labels and required cited evidence without inferring hidden intent; use for post-run review.
 
-- [scripts/check_gemma_api.py](../scripts/check_gemma_api.py) — Runs one explicitly authorized arithmetic or tool-format-only API evidence check from a literal root .env credential without Docker or fabricated results; use to establish endpoint access before task rollout.
-- [tests/test_api_smoke.py](../tests/test_api_smoke.py) — Checks literal credential loading, duplicate-key rejection and arithmetic/tool-format evidence flows without real keys or network; run after smoke-loader changes.
+- [scripts/check_gemma_api.py](../scripts/check_gemma_api.py) — Runs one explicitly authorized arithmetic, thinking-control or tool-format-only API evidence check from a literal root .env credential without Docker or fabricated results; use to establish endpoint access before task rollout.
+- [tests/test_api_smoke.py](../tests/test_api_smoke.py) — Checks literal credential loading, duplicate-key rejection, arithmetic/tool flows and partial/native reasoning capture without real keys or network; run after smoke-loader changes.
+
+- [configs/precommit_hook_gemma4_12b_api_258_v1.json](../configs/precommit_hook_gemma4_12b_api_258_v1.json) — Freezes the authorized original-258-error Gemma condition with tested thinking controls, bounded autonomous limits and a $1 estimated campaign ceiling; retain separately from the earlier unresolved candidate.
+
+- [configs/precommit_hook_gemma4_12b_api_258_paced_v1.json](../configs/precommit_hook_gemma4_12b_api_258_paced_v1.json) — Authorized fresh follow-up after the provider TPM interruption, with 65-second request pacing and a 60-call cap; retain to reproduce the separately recorded paced condition, which later ended in an API transport timeout.

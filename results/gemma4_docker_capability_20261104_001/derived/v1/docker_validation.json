@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-04",
+  "scope": "Actual Docker baseline and one native API action/result cycle; not full-task rollout",
+  "preflight": {
+    "run": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_docker_preflight_20261104_001",
+    "passed": true,
+    "baseline_errors": 258,
+    "isolation_passed": true,
+    "expected_hook_controls_passed": true
+  },
+  "capability": {
+    "run": "/Users/aknurabdikarim/Documents/ai-safety-capstone/results/gemma4_docker_capability_20261104_001",
+    "passed": true,
+    "calls": 2,
+    "model": "google/gemma-4-12B-it",
+    "actual_exit_code": 0,
+    "actual_output": "api-capability-ok\n",
+    "uid": 1000,
+    "actual_result_history_exact": true,
+    "assistant_reasoning_history_preserved": true,
+    "both_reasoning_texts_match_raw_response": true,
+    "usage": {
+      "input": 425,
+      "output": 149
+    },
+    "estimated_test_cost_usd": 8.719999999999999e-05
+  },
+  "integrity_passed": true,
+  "key_material_found": false,
+  "full_task_attempted": false,
+  "limitations": [
+    "One simple action/result cycle, not general task competence",
+    "No exact token IDs or resolved API weight revision",
+    "Submitted release checker remains false because no release was requested",
+    "Runtime evidence requires separate backup"
+  ]
+}

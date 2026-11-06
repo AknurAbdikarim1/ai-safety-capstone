@@ -1,0 +1,71 @@
+{
+  "protocol": "api-precommit-v1",
+  "canonical_model": "google/gemma-4-12B-it",
+  "task": {
+    "target_errors": 258
+  },
+  "provider": {
+    "name": "siliconflow",
+    "endpoint": "https://api.siliconflow.com/v1/chat/completions",
+    "requested_model": "google/gemma-4-12B-it",
+    "accepted_returned_models": [
+      "google/gemma-4-12B-it"
+    ],
+    "key_env": "SILICONFLOW_API_KEY"
+  },
+  "readiness": {
+    "capabilities_verified": true,
+    "reasoning_policy": "exposed_reasoning",
+    "reasoning_history": "All returned assistant fields preserved; one native Docker tool/result continuation verified",
+    "precision": "provider_advertises_FP8_unverified",
+    "weight_revision": null,
+    "verified_scope": "Original 258-error source preflight and one simple action/result cycle; full-task competence and long histories untested",
+    "evidence_runs": [
+      "results/gemma4_api_reasoning_short_20261104_001",
+      "results/gemma4_docker_preflight_20261104_001",
+      "results/gemma4_docker_capability_20261104_001"
+    ],
+    "followup_authorized_utc": "2026-11-04T17:47:28.829756+00:00",
+    "followup_choice": "User explicitly chose fresh paced run, up to 60 calls"
+  },
+  "billing": {
+    "input_per_million": 0.1,
+    "output_per_million": 0.3,
+    "campaign_ceiling_usd": 1.0,
+    "rate_verified_utc": "2026-11-04T17:30:04.393222+00:00",
+    "currency": "USD",
+    "note": "User approved a fresh paced 60-call attempt; same $1 estimated campaign ceiling including prior runs/reservations. Not invoice-guaranteed billing."
+  },
+  "generation": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "enable_thinking": true,
+    "thinking_budget": 512
+  },
+  "stream": false,
+  "automatic_retries": 0,
+  "limits": {
+    "max_calls": 60,
+    "max_output_tokens": 8192,
+    "total_output_tokens": 100000,
+    "elapsed_seconds": 5400,
+    "request_timeout_seconds": 180,
+    "command_timeout_seconds": 30,
+    "tool_output_chars": 200000,
+    "max_capture_bytes": 8388608,
+    "max_snapshot_bytes": 67108864,
+    "context_tokens": 262144,
+    "min_request_interval_seconds": 65
+  },
+  "limitations": [
+    "Original task/system/user prompts and source remain unchanged.",
+    "enable_thinking=true exposed reasoning on live checks; thinking_budget=512 is requested but not an observed hard bound.",
+    "No top_k or seed sent; provider defaults for unsubmitted controls remain unknown.",
+    "No exact token IDs, hidden context or resolved serving weight revision exposed.",
+    "Context estimate uses prior provider prompt count plus conservative appended-message bytes; no history dropped or summarized.",
+    "One autonomous attempt: 60 calls, 90 minutes, 8192 output tokens/call, 100000 total output reservation budget; no hidden retry or coaching.",
+    "Mechanical verifier and original telemetry do not establish semantic correctness or deception; human source/report audit required.",
+    "Authorized post-429 follow-up: 65-second request-start pacing and 60-call cap; original prompts/source and other limits unchanged.",
+    "Fresh original src_258 workspace; never resume or overwrite the interrupted 001 record."
+  ]
+}

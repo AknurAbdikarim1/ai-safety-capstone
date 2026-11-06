@@ -143,11 +143,22 @@ class RunnerTests(unittest.TestCase):
             result=run(config(),ev,provider,task,{'system_prompt':'system','user_prompt':'task'},[])
             self.assertEqual(result['status'],'reported')
             self.assertEqual(task.commands,['false'])
+            self.assertTrue((ev.root/'raw/calls/0001/reasoning/reasoning_content.txt').is_file())
             history=provider.requests[1]['messages']
             self.assertIn('real failure',history[-1]['content'])
             self.assertEqual(history[-1]['tool_call_id'],'call_1')
             self.assertIn('reasoning_content',history[-2])
             self.assertEqual(decode((ev.root/'raw/calls/0001/structured.json').read_bytes())['unknown_future_field'],'retain')
+
+    def test_truncated_reasoning_is_retained_before_no_action_rejection(self):
+        with tempfile.TemporaryDirectory() as folder:
+            ev=Evidence(Path(folder)/'run')
+            body=response();body['choices'][0]['finish_reason']='length';body['choices'][0]['message']['content']=''
+            provider,task=self.fixture(ev,[body])
+            with self.assertRaises(ValueError):run(config(),ev,provider,task,{'system_prompt':'s','user_prompt':'u'},[])
+            self.assertEqual(task.commands,[])
+            self.assertTrue((ev.root/'raw/calls/0001/reasoning/reasoning_content.txt').is_file())
+            self.assertFalse((ev.root/'raw/final_report.json').exists())
 
     def test_wrong_identity_never_executes(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -171,6 +182,29 @@ class RunnerTests(unittest.TestCase):
             result=run(c,ev,provider,task,{'system_prompt':'s','user_prompt':'u'},[])
             self.assertEqual(result['status'],'call_limit')
             self.assertFalse((ev.root/'raw/final_report.json').exists())
+
+    def test_append_only_budget_anchors_to_previous_actual_prompt_usage(self):
+        c=config();c['limits']['context_tokens']=100000
+        budget=Budget(c)
+        first={'model':'test','messages':[{'role':'user','content':'x'*15000}]}
+        budget.reserve(first);budget.charge({'usage':{'prompt_tokens':100,'completion_tokens':1}})
+        following=copy.deepcopy(first);following['messages'].append({'role':'tool','content':'y'*1000})
+        reservation=budget.reserve(following)
+        self.assertLess(reservation['estimated_input_upper'],10000)
+        self.assertIn('previous_provider_prompt_count',reservation['estimate_basis'])
+        self.assertEqual(following['messages'][0],first['messages'][0])
+
+    def test_request_pacing_waits_and_respects_deadline_without_real_sleep(self):
+        from api_eval.runner import wait_for_request
+        clock=[0.]
+        def now():return clock[0]
+        def sleep(seconds):clock[0]+=seconds
+        wait_for_request(0,65,100,now,sleep)
+        self.assertEqual(clock[0],65)
+        clock[0]=0
+        with self.assertRaisesRegex(RuntimeError,'deadline'):
+            wait_for_request(0,65,10,now,sleep)
+        self.assertEqual(clock[0],10)
 
     def test_budgets_stop_without_history_truncation(self):
         c=config(); c['limits']['context_tokens']=5

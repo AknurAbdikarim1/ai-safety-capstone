@@ -10,12 +10,27 @@ class Budget:
         self.config = config
         self.cost = previous_spend
         self.output = 0
+        self.last_request = None
+        self.last_prompt_tokens = None
 
     def reserve(self, request):
         c = self.config
         # UTF-8 bytes * 4 + 4096 is an explicit conservative estimate, not API token IDs.
         # Billing/context are not guaranteed unless the provider confirms the bound.
         upper_input = len(encode(request))*4 + 4096
+        basis = 'four_times_serialized_utf8_bytes_plus_4096'
+        # On append-only turns, anchor to actual provider-reported prior prompt usage.
+        # This is still an estimate: provider templates/hidden context may change.
+        old = self.last_request
+        if old is not None and self.last_prompt_tokens is not None:
+            old_messages, new_messages = old.get('messages', []), request.get('messages', [])
+            old_options = {k:v for k,v in old.items() if k != 'messages'}
+            new_options = {k:v for k,v in request.items() if k != 'messages'}
+            if old_options == new_options and new_messages[:len(old_messages)] == old_messages:
+                added_bytes = len(encode(new_messages[len(old_messages):]))
+                upper_input = self.last_prompt_tokens + added_bytes*4 + 4096
+                basis = 'previous_provider_prompt_count_plus_four_times_appended_message_bytes_plus_4096'
+
         max_output = c['limits']['max_output_tokens']
         if upper_input+max_output > c['limits']['context_tokens']:
             raise RuntimeError('Conservative context estimate exceeds configured limit; no history truncated')
@@ -25,7 +40,8 @@ class Budget:
         reserve = (upper_input*price['input_per_million']+max_output*price['output_per_million'])/1e6
         if self.cost+reserve > price['campaign_ceiling_usd']:
             raise RuntimeError('Spend budget cannot reserve next request')
-        return {'estimated_input_upper': upper_input, 'reserved_usd_estimate': reserve,
+        self.last_request = copy.deepcopy(request)
+        return {'estimated_input_upper': upper_input, 'estimate_basis': basis, 'reserved_usd_estimate': reserve,
                 'not_a_provider_guarantee': True}
 
     def charge(self, body):
@@ -33,11 +49,27 @@ class Budget:
         inp, out = usage.get('prompt_tokens'), usage.get('completion_tokens')
         if type(inp) is not int or type(out) is not int or inp < 0 or out < 0:
             raise RuntimeError('Missing/invalid billed usage; stop before another call')
+        self.last_prompt_tokens = inp
         self.output += out
         self.cost += (inp*self.config['billing']['input_per_million']+
                       out*self.config['billing']['output_per_million'])/1e6
         return {'provider_usage': usage, 'cumulative_estimated_campaign_cost_usd': self.cost,
                 'output_tokens_this_rollout': self.output, 'cost_type': 'tariff_estimate'}
+
+
+def wait_for_request(last_started, interval, deadline, now=None, sleeper=None):
+    """Pace new requests without retries; deadline remains enforced during the wait."""
+    now = now or time.monotonic
+    sleeper = sleeper or time.sleep
+    if last_started is None:
+        return
+    target = last_started + interval
+    while now() < target:
+        if now() >= deadline:
+            raise RuntimeError('Rollout deadline reached during request pacing')
+        sleeper(min(.25, target-now(), max(0, deadline-now())))
+    if now() >= deadline:
+        raise RuntimeError('Rollout deadline reached during request pacing')
 
 
 def run(config, ev, provider, task, prompts, tools, previous_spend=0, campaign=None):
@@ -46,9 +78,14 @@ def run(config, ev, provider, task, prompts, tools, previous_spend=0, campaign=N
     budget = Budget(config, previous_spend)
     seen = set()
     start = time.monotonic()
+    last_started = None
+    interval = config['limits'].get('min_request_interval_seconds', 0)
     for number in range(1, config['limits']['max_calls']+1):
         if time.monotonic()-start > config['limits']['elapsed_seconds']:
             raise RuntimeError('Rollout deadline reached')
+        if last_started is not None and interval > 0:
+            ev.event('request_pacing', call=number, min_start_interval_seconds=interval)
+            wait_for_request(last_started, interval, start+config['limits']['elapsed_seconds'])
         request = {'model': config['provider']['requested_model'], 'messages': copy.deepcopy(messages),
             'tools': tools, 'stream': False, 'n': 1, 'max_tokens': config['limits']['max_output_tokens'],
             **config['generation']}
@@ -56,12 +93,15 @@ def run(config, ev, provider, task, prompts, tools, previous_spend=0, campaign=N
         if campaign:
             campaign.reserve(reservation['reserved_usd_estimate'], ev.root.name, number)
         ev.event('request_reserved', call=number, **reservation)
+        last_started = time.monotonic()
         body = provider.invoke(request, number)
         # Preserve the complete body before normalization, even for test transports.
         ev.put(f'raw/calls/{number:04d}/structured.json', body)
         choices = body.get('choices', [])
         message = choices[0].get('message', {}) if choices and isinstance(choices[0], dict) else {}
+        reasoning_artifacts = ev.save_reasoning(f'raw/calls/{number:04d}/reasoning', message)
         ev.put(f'raw/calls/{number:04d}/exposure.json', {
+            'reasoning_artifacts': reasoning_artifacts,
             'reasoning_fields_present': [k for k in ('reasoning_content', 'reasoning', 'reasoning_details', 'reasoning_summary') if k in message],
             'reasoning_field_empty': {k: message[k] in (None, '', []) for k in ('reasoning_content', 'reasoning', 'reasoning_details', 'reasoning_summary') if k in message},
             'field_semantics': config['readiness']['reasoning_policy'],

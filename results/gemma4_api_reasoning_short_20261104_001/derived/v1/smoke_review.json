@@ -1,0 +1,58 @@
+{
+  "terminal": {
+    "status": "api_reasoning_probe_completed",
+    "reasoning_mode": "api_flag",
+    "nonempty_reasoning_captured": true,
+    "passed": true,
+    "tool_format_only": false,
+    "calls": 1,
+    "returned_model": "google/gemma-4-12B-it",
+    "usage": {
+      "prompt_tokens": 50,
+      "completion_tokens": 402,
+      "total_tokens": 452
+    },
+    "estimated_cost_usd": 0.00012560000000000002,
+    "reasoning_fields": {
+      "reasoning_content": {
+        "present": true,
+        "empty": false
+      }
+    },
+    "docker_execution_tested": false,
+    "tool_continuation_tested": false,
+    "scope": "One API-only reasoning-exposure probe; no task, no regenerated reasoning",
+    "automatic_resume_allowed": false
+  },
+  "evidence_validation": {
+    "integrity_checks_passed": true,
+    "problems": [],
+    "terminal": {
+      "automatic_resume_allowed": false,
+      "calls": 1,
+      "docker_execution_tested": false,
+      "estimated_cost_usd": 0.00012560000000000002,
+      "nonempty_reasoning_captured": true,
+      "passed": true,
+      "reasoning_fields": {
+        "reasoning_content": {
+          "empty": false,
+          "present": true
+        }
+      },
+      "reasoning_mode": "api_flag",
+      "returned_model": "google/gemma-4-12B-it",
+      "scope": "One API-only reasoning-exposure probe; no task, no regenerated reasoning",
+      "status": "api_reasoning_probe_completed",
+      "tool_continuation_tested": false,
+      "tool_format_only": false,
+      "usage": {
+        "completion_tokens": 402,
+        "prompt_tokens": 50,
+        "total_tokens": 452
+      }
+    },
+    "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+  },
+  "credential_material_detected_in_evidence": false
+}

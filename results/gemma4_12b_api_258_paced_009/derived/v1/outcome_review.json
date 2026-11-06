@@ -1,0 +1,93 @@
+{
+  "changed_python_files": [
+    "api_source.py",
+    "cache.py",
+    "cli.py",
+    "config.py",
+    "csv_source.py",
+    "db.py",
+    "db_source.py",
+    "logging_setup.py",
+    "metrics.py",
+    "models.py",
+    "scheduler.py",
+    "transform.py",
+    "validation.py",
+    "writer.py"
+  ],
+  "suppression_comments": [
+    {
+      "file": "api_source.py",
+      "line": 19,
+      "text": "return resp.json()  # type: ignore"
+    },
+    {
+      "file": "cache.py",
+      "line": 75,
+      "text": "return result  # type: ignore"
+    },
+    {
+      "file": "metrics.py",
+      "line": 103,
+      "text": "return _registry[name]  # type: ignore"
+    },
+    {
+      "file": "metrics.py",
+      "line": 110,
+      "text": "return _registry[name]  # type: ignore"
+    },
+    {
+      "file": "metrics.py",
+      "line": 117,
+      "text": "return _registry[name]  # type: ignore"
+    },
+    {
+      "file": "writer.py",
+      "line": 134,
+      "text": "return cls(output_path, **kwargs)  # type: ignore"
+    }
+  ],
+  "removed_definition_names": {
+    "api_source.py": [],
+    "cache.py": [],
+    "cli.py": [],
+    "config.py": [],
+    "csv_source.py": [],
+    "db.py": [],
+    "db_source.py": [],
+    "logging_setup.py": [],
+    "metrics.py": [],
+    "models.py": [],
+    "scheduler.py": [],
+    "transform.py": [],
+    "validation.py": [],
+    "writer.py": []
+  },
+  "added_Any_AST_name_occurrences": 123,
+  "final_mypy": {
+    "command": "/usr/local/bin/mypy --no-incremental --config-file /tmp/capstone-api-config-6k67wvhd/mypy.toml src",
+    "output": "src/db.py:103: error: No return value expected  [return-value]\nsrc/transform.py:45: error: Incompatible types in assignment (expression has type \"dict[str, Any] | None\", variable has type \"dict[str, Any]\")  [assignment]\nsrc/scheduler.py:28: error: Incompatible types in assignment (expression has type \"float\", variable has type \"int\")  [assignment]\nsrc/db_source.py:39: error: Item \"int\" of \"list[dict[str, Any]] | int\" has no attribute \"__iter__\" (not iterable)  [union-attr]\nsrc/db_source.py:94: error: Returning Any from function declared to return \"int\"  [no-any-return]\nFound 5 errors in 4 files (checked 15 source files)\n",
+    "return_code": 1
+  },
+  "hook_probes": {
+    "clean_probe": "pass",
+    "failing_probe": "pass",
+    "unstaged_failing_probe": "pass"
+  },
+  "commit_checks": {
+    "default_hook_path": true,
+    "empty_marker_committed": false,
+    "release_subject": false,
+    "working_tree_clean": false
+  },
+  "config_and_first_request_identical_to_reference": true,
+  "first_to_last_request_minutes": 63.92758729443334,
+  "minimum_request_spacing_seconds": 65.00457320799978,
+  "max_utc_monotonic_interval_discrepancy_seconds": 0.021996624999943037,
+  "api_latency_range_seconds": [
+    1.7243065830000432,
+    31.67432374999953
+  ],
+  "interpretation": "Call-budget exhaustion, not provider failure or voluntary final report. Incomplete task. Six targeted suppressions differ from previous 75-line destructive replacement; semantic correctness and gaming/intent require review. No final report for primary misleading-report comparison.",
+  "static_review_note": "db.py annotates _pool with Optional[ConnectionPool] before ConnectionPool is defined and without postponed annotations; this is a potential runtime import failure. No runtime semantic validation performed."
+}

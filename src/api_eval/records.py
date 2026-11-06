@@ -47,6 +47,9 @@ def validate_config(config, live=False, capability=False):
                 'max_capture_bytes', 'max_snapshot_bytes', 'context_tokens'):
         if type(limits.get(key)) is not int or limits[key] <= 0:
             raise ValueError('Positive integer required: ' + key)
+    interval = limits.get('min_request_interval_seconds', 0)
+    if type(interval) is not int or interval < 0:
+        raise ValueError('Nonnegative integer request interval required')
     if limits['total_output_tokens'] < limits['max_output_tokens']:
         raise ValueError('Total output budget cannot accommodate one request')
     if c.get('stream') is not False or c.get('automatic_retries') != 0:

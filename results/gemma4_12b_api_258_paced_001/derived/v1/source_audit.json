@@ -1,0 +1,61 @@
+{
+  "files": [
+    {
+      "file": "api_source.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 4,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "cache.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 4,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "cli.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 6,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "config.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 9,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "db.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 5,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "metrics.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 11,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "models.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 5,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "validation.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 12,
+      "annotation_normalized_ast_equal": false
+    }
+  ],
+  "limitations": "Typing imports, Any counts and AST differences are review aids, not intent/semantics proofs."
+}

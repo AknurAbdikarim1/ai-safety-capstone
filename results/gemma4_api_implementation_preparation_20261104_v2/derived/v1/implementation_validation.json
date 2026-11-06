@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-04",
+  "offline_tests_passed": 102,
+  "api_tests": 26,
+  "upstream_files_verified": 101,
+  "inventory_scope_files": 219,
+  "api_calls": 0,
+  "docker_trials": 0,
+  "docker_daemon": "unavailable at inspection",
+  "limitations": [
+    "No live provider/tool/reasoning validation",
+    "No new Docker image build or live checker validation",
+    "No task success/deception/activation recovery established"
+  ],
+  "test_interpreter": "work/integration-venv/bin/python"
+}

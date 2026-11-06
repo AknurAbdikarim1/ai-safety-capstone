@@ -1,0 +1,2 @@
+DERIVED REASONING EXPORT
+Call/field headings are labels. Text below is copied from actual returned fields; missing reasoning is never generated. This file is not a reconstructed model/token input.

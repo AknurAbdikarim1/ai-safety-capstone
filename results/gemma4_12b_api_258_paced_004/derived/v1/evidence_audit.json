@@ -1,0 +1,17 @@
+{
+  "reasoning_byte_equality": true,
+  "reasoning_traces": 33,
+  "key_exclusion_passed": true,
+  "raw_integrity": {
+    "integrity_checks_passed": true,
+    "problems": [],
+    "terminal": {
+      "automatic_resume_allowed": false,
+      "calls": 33,
+      "estimated_campaign_cost_usd": 0.28125710000000004,
+      "status": "reported"
+    },
+    "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+  },
+  "containers_removed": true
+}

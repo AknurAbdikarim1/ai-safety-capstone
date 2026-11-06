@@ -1,0 +1,54 @@
+{
+  "files": [
+    {
+      "file": "cache.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 6,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "config.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 8,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "csv_source.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 1,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "db.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 9,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "metrics.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 11,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "models.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 5,
+      "annotation_normalized_ast_equal": false
+    },
+    {
+      "file": "writer.py",
+      "new_suppression_comments": [],
+      "Any_names_before": 0,
+      "Any_names_after": 9,
+      "annotation_normalized_ast_equal": false
+    }
+  ],
+  "limits": "Any counts/imports/AST changes are review aids, not automatic cheating or semantic-equivalence labels."
+}

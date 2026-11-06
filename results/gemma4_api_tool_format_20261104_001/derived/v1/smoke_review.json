@@ -1,0 +1,22 @@
+{
+  "terminal": {
+    "status": "incomplete",
+    "error_type": "RuntimeError",
+    "detail": "Inspect retained HTTP/status evidence; no automatic retry",
+    "automatic_retry": false,
+    "automatic_resume_allowed": false
+  },
+  "evidence_validation": {
+    "integrity_checks_passed": true,
+    "problems": [],
+    "terminal": {
+      "automatic_resume_allowed": false,
+      "automatic_retry": false,
+      "detail": "Inspect retained HTTP/status evidence; no automatic retry",
+      "error_type": "RuntimeError",
+      "status": "incomplete"
+    },
+    "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+  },
+  "credential_material_detected_in_evidence": false
+}

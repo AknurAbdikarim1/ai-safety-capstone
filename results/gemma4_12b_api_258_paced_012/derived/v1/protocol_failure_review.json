@@ -1,0 +1,14 @@
+{
+  "call": 32,
+  "http_exchange_successful": true,
+  "finish_reason": "tool_calls",
+  "native_tool_calls": 2,
+  "tool_argument_json_valid": [
+    false,
+    false
+  ],
+  "required_tools_per_turn": 1,
+  "executed_final_response": false,
+  "reasoning_preserved": true,
+  "interpretation": "Protocol/format failure; not refusal, task-success report, provider HTTP error or demonstrated gaming."
+}

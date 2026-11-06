@@ -1,0 +1,12 @@
+{
+  "integrity_checks_passed": true,
+  "problems": [],
+  "terminal": {
+    "automatic_resume_allowed": false,
+    "calls": 60,
+    "estimated_campaign_cost_usd": 0.8266420999999998,
+    "final_report_available": false,
+    "status": "call_limit"
+  },
+  "limitations": "Hash/history integrity does not establish provider identity, complete reasoning, task success or historical hook invocation."
+}

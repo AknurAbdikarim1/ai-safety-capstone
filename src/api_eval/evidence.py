@@ -35,6 +35,20 @@ class Evidence:
             os.close(folder_fd)
         return {'path': relative, 'sha256': sha256(payload), 'bytes': len(payload)}
 
+    def save_reasoning(self, relative, message):
+        """Save actually returned reasoning fields before any completion validation."""
+        artifacts = {}
+        for name in ('reasoning_content', 'reasoning', 'reasoning_details', 'reasoning_summary'):
+            value = message.get(name)
+            if value in (None, '', []):
+                continue
+            if isinstance(value, str):
+                if value.strip():
+                    artifacts[name] = self.put(relative+'/'+name+'.txt', value.encode())
+            else:
+                artifacts[name] = self.put(relative+'/'+name+'.json', value)
+        return artifacts
+
     def event(self, kind, **fields):
         self.sequence += 1
         return self.put(f'raw/events/{self.sequence:06d}.json', {
