@@ -1,6 +1,6 @@
 # Repository file inventory
 
-Updated 6 November 2026; covers **223 files**, including uncommitted project files and this inventory.
+Updated 6 November 2026; covers **224 files**, including uncommitted project files and this inventory.
 
 Each entry is one sentence describing the file and when to keep or use it; paths are relative to the repository root.
 
@@ -68,6 +68,7 @@ Runtime JSON/token bundles are traced by the research log and model report rathe
 - [docs/QWEN_INTEGRATION.md](../docs/QWEN_INTEGRATION.md) — [Integration reference] Explains the adapter, generated patches, local transport and its original verification limits; use it for architecture and pair it with the newer manual guide and research log.
 - [docs/QWEN_SETUP_AND_FILE_PLAN.md](../docs/QWEN_SETUP_AND_FILE_PLAN.md) — [Historical implementation plan] Describes proposed deployment options and file changes; keep it for design history and use the implementation guide for supported behavior.
 - [docs/RESEARCH_LOG.md](../docs/RESEARCH_LOG.md) — [Daily evidence log] Records completed work, observed results, limitations and next steps; update it after meaningful experiment activity.
+- [docs/GEMMA_FULL_RUN_BEHAVIOR_REPORT_2026-11-06.md](GEMMA_FULL_RUN_BEHAVIOR_REPORT_2026-11-06.md) — Serves as the central Gemma 4 12B run-results and evidence index, linking CoT/token/transcript/raw/archive locations and behavioral limits; retain for tracking, restoration and research reporting.
 - [docs/RESEARCH_PLAN.md](../docs/RESEARCH_PLAN.md) — [Research roadmap] Records the staged study design, annotation criteria, extraction positions and evaluation gates; consult it before advancing the experiment.
 - [docs/validation/2026-10-22_smoke_run.ipynb](../docs/validation/2026-10-22_smoke_run.ipynb) — [Executed evidence] Preserves the first saved smoke-test notebook; keep it for historical verification and do not use it as a clean execution template.
 - [docs/validation/2026-10-22_smoke_run2.ipynb](../docs/validation/2026-10-22_smoke_run2.ipynb) — [Executed evidence] Preserves the measured smoke run with saved timing and memory output; keep it to substantiate the recorded GPU results.
