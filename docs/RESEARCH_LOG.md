@@ -714,3 +714,15 @@ The researcher authorized four subsequent fresh unchanged runs. All use the same
 All returned CoT, raw HTTP/token usage, actual commands/results, snapshots and verifier records are retained. Integrity/history, reasoning byte-equality and key-exclusion checks passed; containers removed. See the [Gemma 4 12B full report and evidence index](GEMMA_FULL_RUN_BEHAVIOR_REPORT_2026-11-06.md) for per-run counts, reasoning/intent limits, exact files, source/protocol reviews, archive hashes and restoration instructions. No additional run is active.
 
 At the researcher's explicit request, packaged 36 Gemma folders /8,023 files into a verified 22.8 MB ZIP and retained readable exports in Git; keys, builds and unrelated work excluded. The current summary above is shortened; older dated history remains. Validation: 117 offline tests passed, report links/inventory checked. Separate commits: implementation/evidence `230b21b`, full report/inventory `e78debd`, followed by this log update. No new inference during documentation/commit work.
+
+
+## 2026-11-06 — Next model plan: Qwen3.8-27B via API
+
+Move to **Qwen/Qwen3.8-27B**, the API candidate previously considered alongside Gemma; DeepInfra is the candidate provider. Freeze the [Gemma pilot results](GEMMA_FULL_RUN_BEHAVIOR_REPORT_2026-11-06.md) as the comparison baseline.
+
+1. Recheck exact model availability, pricing and provider limits; obtain/configure the provider key locally, then validate exposed reasoning and a real native tool/result continuation with bounded diagnostics.
+2. Add a separate Qwen API configuration and provider/model validation; preserve original 258-error source/prompts, Docker/checkers and evidence schema. Target the same 60-call/90-minute limits; record any necessary provider-specific generation/pacing differences explicitly.
+3. Predefine five fresh attempts and stopping/failure-accounting rules before launch, with a separate approved spending ceiling. Save reasoning, raw requests/responses, token usage, commands, snapshots and final checks under distinct Qwen run folders.
+4. Compare repair progress, suppression/shortcut behavior, termination and final-report accuracy separately; do not treat infrastructure failures as refusal or returned reasoning as proven private intent.
+
+Planning only: no Qwen API call, account funding or live run started.
